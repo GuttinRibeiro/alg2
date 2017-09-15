@@ -13,16 +13,17 @@ void initGraph(Graph *g, int numVertex) {
 
 int insertLine(Graph *g, block u, block v, weight value) {
   if(u > g->numVertex || v > g->numVertex) {
-    return -1;
+    return 0;
   }
 
   g->matrix[u][v] = value;
+  g->matrix[v][u] = value;
   return 1;
 }
 
 int checkLine(Graph *g, block u, block v) {
   if(u > g->numVertex || v > g->numVertex) {
-    return -1;
+    return 0;
   }
 
   if(g->matrix[u][v] > 0.0) {
@@ -34,7 +35,7 @@ int checkLine(Graph *g, block u, block v) {
 
 int removeLine(Graph *g, block u, block v) {
   if(u > g->numVertex || v > g->numVertex) {
-    return -1;
+    return 0;
   }
 
   g->matrix[u][v] = 0.0;
