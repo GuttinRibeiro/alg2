@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include "adjacencyMatrix.h"
 
 void initGraph(Graph *g, int numVertex) {
@@ -13,7 +12,7 @@ void initGraph(Graph *g, int numVertex) {
 
 int insertLine(Graph *g, block u, block v, weight value) {
   if(u > g->numVertex || v > g->numVertex) {
-    return 0;
+    return -1;
   }
 
   g->matrix[u][v] = value;
@@ -23,7 +22,7 @@ int insertLine(Graph *g, block u, block v, weight value) {
 
 int checkLine(Graph *g, block u, block v) {
   if(u > g->numVertex || v > g->numVertex) {
-    return 0;
+    return -1;
   }
 
   if(g->matrix[u][v] > 0.0) {
@@ -35,7 +34,7 @@ int checkLine(Graph *g, block u, block v) {
 
 int removeLine(Graph *g, block u, block v) {
   if(u > g->numVertex || v > g->numVertex) {
-    return 0;
+    return -1;
   }
 
   g->matrix[u][v] = 0.0;
