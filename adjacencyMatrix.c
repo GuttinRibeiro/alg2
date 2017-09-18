@@ -1,13 +1,19 @@
 #include <stdio.h>
 #include "adjacencyMatrix.h"
 
-void initGraph(Graph *g, int numVertex) {
+int initGraph(Graph *g, int numVertex) {
+  if(numVertex > MAXNUMVERTEX) {
+    return -1;
+  }
+
   g->numVertex = numVertex;
   for(int i = 0; i < g->numVertex; i++) {
     for(int j = 0; j < g->numVertex; j++) {
       g->matrix[i][j] = 0.0;
     }
   }
+
+  return 0;
 }
 
 int insertLine(Graph *g, block u, block v, weight value) {

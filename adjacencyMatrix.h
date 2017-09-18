@@ -13,7 +13,7 @@ typedef struct {
 
 //All these functions returns a negative value when there's an error.
 //The graph considers that the vertex counting start at zero.
-void initGraph(Graph *g, int numVertex); //Initializes a graph.
+int initGraph(Graph *g, int numVertex); //Initializes a graph.
 int insertLine(Graph *g, block u, block v, weight value); //Insert a line.
 int checkLine(Graph *g, block u, block v); //Checks if there's a line between vertex u and v.
 int removeLine(Graph *g, block u, block v); //Removes a line between two vertex.
