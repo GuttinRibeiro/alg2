@@ -15,22 +15,49 @@ int swapBlocks(block *u, block *v) {
   return 1;
 }
 
+void printGraph(Graph *g) {
+  printf("Number of vertex: %d\n", g->numVertex);
+  printf("Graph representation: adjacency list\n");
+
+  for(int i = 0; i < g->numVertex; i++) {
+    block *b = g->list[i];
+    printf("Line %d: ", i);
+    while(b != NULL) {
+      printf("%d ", b->vertex);
+      b = b->next;
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
+
+void printBlock(block *u) {
+  printf("block: %d\n", u->vertex);
+  printf("value: %.2f\n", u->weight);
+}
 //Graph's functions
-void initGraph(Graph *g, int numVertex) {
+int initGraph(Graph *g, int numVertex) {
+  if(numVertex > MAXNUMVERTEX) {
+    return -1;
+  }
+
   g->numVertex = numVertex;
   for(int i = 0; i < g->numVertex; i++) {
     g->list[i] = NULL;
   }
+
+  return 1;
 }
 
 int initBlock(block *u, float weight, int vertex) {
-  u = (block *)malloc(sizeof(block *));
   if(u == NULL) {
     return -1;
   }
 
   u->weight = weight;
   u->vertex = vertex;
+  u->next = NULL;
+
   return 1;
 }
 
@@ -40,14 +67,17 @@ int insertLine(Graph *g, block *u, block *v) {
   }
 
   //Line between u and v
-  block *aux = g->list[u->vertex]->next;
-  g->list[u->vertex]->next = v;
-  v->next = aux;
-
+  block *aux = g->list[u->vertex];
+  g->list[u->vertex] = v;
+  printGraph(g);
+  g->list[u->vertex]->next = aux;
+  printGraph(g);
   //Line between v and u
-  aux = g->list[v->vertex]->next;
-  g->list[v->vertex]->next = u;
-  u->next = aux;
+  aux = g->list[v->vertex];
+  g->list[v->vertex] = u;
+  printGraph(g);
+  g->list[v->vertex]->next = aux;
+  printGraph(g);
 
   return 1;
 }
