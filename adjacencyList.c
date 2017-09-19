@@ -120,43 +120,36 @@ int checkLine(Graph *g, vertex u, vertex v) {
   return 0;
 }
 
-/*int removeLine(Graph *g, vertex u, vertex v) {
+int _removeDirectedLine(Graph *g, vertex u, vertex v) {
+  block *curr = g->list[u];
+  block *prev;
+  while(curr != NULL && curr->id != v) {
+    prev = curr;
+    curr = curr->next;
+  }
+
+  if(curr == NULL) {
+    return -1;
+  }
+
+  // if the line to be removed is the first one...
+  if(curr == g->list[u]) {
+    g->list[u] = curr->next;
+  } else {
+    prev->next = curr->next;
+  }
+
+  free(curr);
+  return 1;
+}
+
+int removeLine(Graph *g, vertex u, vertex v) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
 
-  //Removes the connection between u and v
-  block *b1 = g->list[u];
-  block *b2 = b1;
-  while(b1 != NULL && b1->id != v) {
-    b2 = b1;
-    b1 = b1->next;
-  }
-
-  if(b1 == NULL) {
-    return 0;
-  }
-
-  b2->next = b1->next;
-  free(b1);
-
-  //Removes the connection between v and u
-  b1 = g->list[v];
-  b2 = b1;
-  while(b1 != NULL && b1->id != u) {
-    b2 = b1;
-    b1 = b1->next;
-  }
-
-  if(b1 == NULL) {
-    return 0;
-  }
-
-  b2->next = b1->next;
-  free(b1);
-
-  return 1;
-}*/
+  return _removeDirectedLine(g,u,v) | _removeDirectedLine(g,v,u);
+}
 
 int checkIfThereIsANeighboor(Graph *g, vertex u) {
   if(u >= g->numVertex) {
