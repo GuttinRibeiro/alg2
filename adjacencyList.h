@@ -17,8 +17,13 @@ typedef struct {
   int numVertex;
 } Graph;
 
-//All these functions returns a non positive value when there's an error
-//The graph considers that the vertex counting start at zero.
+//All these functions returns a non positive value when there's something not expected:
+/*
+  -1 : indicates that one of the parameters has a problem
+   0 : indicates that the function hasn't been performed or that it logical value is equal to false
+   1 : indicates that the function has been performed or that it logical value is equal to true
+*/
+//The graph considers that the vertex counting start at zero
 int initGraph(Graph *g, int numVertex); //Initializes a graph
 int finishGraph(Graph *g); //Finishes a graph
 block *initBlock(vertex u, weight value); //Allocates and initializes a block

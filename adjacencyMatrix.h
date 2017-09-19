@@ -11,12 +11,17 @@ typedef struct {
   int numVertex;
 } Graph;
 
-//All these functions returns a negative value when there's an error.
+//All these functions returns a non positive value when there's something not expected:
+/*
+  -1 : indicates that one of the parameters has a problem
+   0 : indicates that the function hasn't been performed or that it logical value is equal to false
+   1 : indicates that the function has been performed or that it logical value is equal to true
+*/
 //The graph considers that the vertex counting start at zero.
-int initGraph(Graph *g, int numVertex); //Initializes a graph.
-int insertLine(Graph *g, vertex u, vertex v, weight value); //Insert a line between vertices u and v.
-int checkLine(Graph *g, vertex u, vertex v); //Checks if there's a line between vertex u and v.
-int removeLine(Graph *g, vertex u, vertex v); //Removes a line between two vertices.
+int initGraph(Graph *g, int numVertex); //Initializes a graph
+int insertDirectedLine(Graph *g, vertex u, vertex v, weight value); //Inserts a directed line from vertex u to vertex v
+int checkLine(Graph *g, vertex u, vertex v); //Checks if there's a line from vertex u to vertex v
+int removeLine(Graph *g, vertex u, vertex v); //Removes a line from vertex u to vertex v
 int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u.
 int getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u.
 

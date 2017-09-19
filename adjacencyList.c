@@ -116,7 +116,7 @@ int removeDirectedLine(Graph *g, vertex u, vertex v) {
   }
 
   if(curr == NULL) {
-    return -1;
+    return 0;
   }
 
   // if the line that should be removed is the first one

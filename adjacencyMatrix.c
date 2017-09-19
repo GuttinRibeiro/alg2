@@ -27,7 +27,7 @@ int initGraph(Graph *g, int numVertex) {
     }
   }
 
-  return 0;
+  return 1;
 }
 
 int insertLine(Graph *g, vertex u, vertex v, weight value) {
@@ -36,7 +36,6 @@ int insertLine(Graph *g, vertex u, vertex v, weight value) {
   }
 
   g->matrix[u][v] = value;
-  g->matrix[v][u] = value;
   return 1;
 }
 
@@ -45,7 +44,7 @@ int checkLine(Graph *g, vertex u, vertex v) {
     return -1;
   }
 
-  if(g->matrix[u][v] > 0.0) {
+  if(g->matrix[u][v] != 0.0) {
     return 1;
   }
 
@@ -58,7 +57,6 @@ int removeLine(Graph *g, vertex u, vertex v) {
   }
 
   g->matrix[u][v] = 0.0;
-  g->matrix[v][u] = 0.0;
   return 1;
 }
 
@@ -68,7 +66,7 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
   }
 
   for(int i = 0; i < g->numVertex; i++) {
-    if(g->matrix[u][i] > 0.0) {
+    if(g->matrix[u][i] != 0.0) {
       return 1;
     }
   }
@@ -82,7 +80,7 @@ int getFirstNeighboor(Graph *g, vertex u) {
   }
 
   for(int i = 0; i < g->numVertex; i++) {
-    if(g->matrix[u][i] > 0.0) {
+    if(g->matrix[u][i] != 0.0) {
       return i;
     }
   }
