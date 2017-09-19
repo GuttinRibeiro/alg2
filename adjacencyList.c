@@ -3,18 +3,6 @@
 #include "adjacencyList.h"
 
 //Utils
-int swapBlocks(block *u, block *v) {
-  if(u == NULL || v == NULL) {
-    return -1;
-  }
-
-  block *aux = u;
-  u = v;
-  v = aux;
-
-  return 1;
-}
-
 void printGraph(Graph *g) {
   printf("Number of vertex: %d\n", g->numVertex);
   printf("Graph representation: adjacency list\n");
@@ -23,7 +11,7 @@ void printGraph(Graph *g) {
     block *b = g->list[i];
     printf("Line %d: ", i);
     while(b != NULL) {
-      printf("%d ", b->vertex);
+      printf("%d ", b->id);
       b = b->next;
     }
     printf("\n");
@@ -32,9 +20,17 @@ void printGraph(Graph *g) {
 }
 
 void printBlock(block *u) {
-  printf("block: %d\n", u->vertex);
-  printf("value: %.2f\n", u->weight);
+  printf("block: %d\n", u->id);
+  printf("value: %.2f\n", u->value);
+
+  if(u->next != NULL) {
+    printf("next: %d\n", u->next->id);
+  }
+  else {
+    printf("next = NULL\n");
+  }
 }
+
 //Graph's functions
 int initGraph(Graph *g, int numVertex) {
   if(numVertex > MAXNUMVERTEX) {
@@ -49,57 +45,73 @@ int initGraph(Graph *g, int numVertex) {
   return 1;
 }
 
-int initBlock(block *u, float weight, int vertex) {
-  if(u == NULL) {
-    return -1;
+int finishGraph(Graph *g) {
+  if(g == NULL) {
+    return 0;
   }
 
-  u->weight = weight;
-  u->vertex = vertex;
-  u->next = NULL;
-
+  block *p;
+  for(int i = 0; i < g->numVertex; i++) {
+      p = g->list[i];
+      while(p != NULL) {
+        g->list[i] = g->list[i]->next;
+        free(p);
+        p = g->list[i];
+      }
+  }
   return 1;
 }
 
-int insertLine(Graph *g, block *u, block *v) {
-  if(u == NULL || v == NULL) {
+block* initBlock(vertex u, weight value, int *err) {
+  block *newBlock = (block *)malloc(sizeof(block));
+  if(newBlock == NULL) {
+    *err = 1;
+    return NULL;
+  }
+
+  newBlock->id = u;
+  newBlock->value = value;
+  *err = 0;
+  return newBlock;
+}
+
+int insertLine(Graph *g, vertex u, weight valueU, vertex v, weight valueV) {
+  if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
+  }
+
+  int err = 0;
+  block *newU = initBlock(u, valueU, &err);
+  if(err) {
+    return 0;
+  }
+
+  block *newV = initBlock(v, valueV, &err);
+  if(err) {
+    return 0;
   }
 
   //Line between u and v
-  block *aux = g->list[u->vertex];
-  g->list[u->vertex] = v;
-  printGraph(g);
-  g->list[u->vertex]->next = aux;
-  printGraph(g);
+  block *aux = g->list[newU->id];
+  g->list[newU->id] = newV;
+  g->list[newU->id]->next = aux;
+
   //Line between v and u
-  aux = g->list[v->vertex];
-  g->list[v->vertex] = u;
-  printGraph(g);
-  g->list[v->vertex]->next = aux;
-  printGraph(g);
+  aux = g->list[newV->id];
+  g->list[newV->id] = newU;
+  g->list[newV->id]->next = aux;
 
   return 1;
 }
 
-int checkLine(Graph *g, block *u, block *v) {
-  if(u == NULL || v == NULL) {
+int checkLine(Graph *g, vertex u, vertex v) {
+  if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
 
-  int swap = 0;
-  //Get smaller id for block u
-  if(u->vertex > v->vertex) {
-    swapBlocks(u, v);
-    swap = 1;
-  }
-
-  block *b = g->list[u->vertex];
+  block *b = g->list[u];
   while(b != NULL) {
-    if(b->vertex == v->vertex) {
-      if(swap) {
-        swapBlocks(u, v);
-      }
+    if(b->id == v) {
       return 1;
     }
     b = b->next;
@@ -108,61 +120,60 @@ int checkLine(Graph *g, block *u, block *v) {
   return 0;
 }
 
-int removeLine(Graph *g, block *u, block *v) {
-  if(u == NULL || v == NULL) {
+/*int removeLine(Graph *g, vertex u, vertex v) {
+  if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
 
-  int swap = 0;
-  //Get smaller id for block u
-  if(u->vertex > v->vertex) {
-    swapBlocks(u, v);
-    swap = 1;
-  }
-
-  block *b1 = g->list[u->vertex];
-  while(b1 != NULL) {
-    if(b1->next->vertex == v->vertex) {
-      block *p1 = b1;
-      p1 = p1->next;
-      b1->next = p1->next;
-
-      block *b2 = g->list[v->vertex];
-      while(b2->next->vertex != u->vertex) {
-        b2 = b2->next;
-      }
-
-      block *p2 = b2;
-      p2 = p2->next;
-      b2->next = p2->next;
-
-      free(p1);
-      free(p2);
-
-      return 1;
-    }
+  //Removes the connection between u and v
+  block *b1 = g->list[u];
+  block *b2 = b1;
+  while(b1 != NULL && b1->id != v) {
+    b2 = b1;
     b1 = b1->next;
   }
 
-  return 0;
-}
+  if(b1 == NULL) {
+    return 0;
+  }
 
-int checkIfThereIsANeighboor(Graph *g, block *u) {
-  if(u == NULL) {
+  b2->next = b1->next;
+  free(b1);
+
+  //Removes the connection between v and u
+  b1 = g->list[v];
+  b2 = b1;
+  while(b1 != NULL && b1->id != u) {
+    b2 = b1;
+    b1 = b1->next;
+  }
+
+  if(b1 == NULL) {
+    return 0;
+  }
+
+  b2->next = b1->next;
+  free(b1);
+
+  return 1;
+}*/
+
+int checkIfThereIsANeighboor(Graph *g, vertex u) {
+  if(u >= g->numVertex) {
     return -1;
   }
 
-  if(g->list[u->vertex] == NULL) {
+  if(g->list[u] == NULL) {
     return 0;
   }
 
   return 1;
 }
 
-block *getFirstNeighboor(Graph *g, block *u) {
-  if(u == NULL) {
-    return NULL;
+vertex getFirstNeighboor(Graph *g, vertex u) {
+  if(u >= g->numVertex || g->list[u] == NULL) {
+    return -1;
   }
 
-  return (g->list[u->vertex]->next);
+  return (g->list[u]->id);
 }

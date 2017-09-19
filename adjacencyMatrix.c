@@ -1,6 +1,20 @@
 #include <stdio.h>
 #include "adjacencyMatrix.h"
 
+//Utils
+void printGraph(Graph *g) {
+  printf("Number of vertex: %d\n", g->numVertex);
+  printf("Graph representation: adjacency matrix\n");
+  for(int i = 0; i < g->numVertex; i++) {
+    for(int j = 0; j < g->numVertex; j++) {
+      printf("%.2f ", g->matrix[i][j]);
+    }
+    printf("\n");
+  }
+  printf("\n");
+}
+
+//Graph's functions
 int initGraph(Graph *g, int numVertex) {
   if(numVertex > MAXNUMVERTEX) {
     return -1;
@@ -16,7 +30,7 @@ int initGraph(Graph *g, int numVertex) {
   return 0;
 }
 
-int insertLine(Graph *g, block u, block v, weight value) {
+int insertLine(Graph *g, vertex u, vertex v, weight value) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
@@ -26,7 +40,7 @@ int insertLine(Graph *g, block u, block v, weight value) {
   return 1;
 }
 
-int checkLine(Graph *g, block u, block v) {
+int checkLine(Graph *g, vertex u, vertex v) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
@@ -38,7 +52,7 @@ int checkLine(Graph *g, block u, block v) {
   return 0;
 }
 
-int removeLine(Graph *g, block u, block v) {
+int removeLine(Graph *g, vertex u, vertex v) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
@@ -48,7 +62,7 @@ int removeLine(Graph *g, block u, block v) {
   return 1;
 }
 
-int checkIfThereIsANeighboor(Graph *g, block u) {
+int checkIfThereIsANeighboor(Graph *g, vertex u) {
   if(u >= g->numVertex) {
     return -1;
   }
@@ -62,7 +76,7 @@ int checkIfThereIsANeighboor(Graph *g, block u) {
   return 0;
 }
 
-int getFirstNeighboor(Graph *g, block u) {
+int getFirstNeighboor(Graph *g, vertex u) {
   if(u >= g->numVertex) {
     return -1;
   }
@@ -74,17 +88,4 @@ int getFirstNeighboor(Graph *g, block u) {
   }
 
   return 0;
-}
-
-//Utils
-void printGraph(Graph *g) {
-  printf("Number of vertex: %d\n", g->numVertex);
-  printf("Graph representation: adjacency matrix\n");
-  for(int i = 0; i < g->numVertex; i++) {
-    for(int j = 0; j < g->numVertex; j++) {
-      printf("%.2f ", g->matrix[i][j]);
-    }
-    printf("\n");
-  }
-  printf("\n");
 }
