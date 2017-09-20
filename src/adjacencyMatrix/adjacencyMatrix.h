@@ -1,5 +1,6 @@
 #ifndef ADJACENCYMATRIX_h
 #define ADJACENCYMATRIX_h
+
 #include <float.h>
 
 #define MAXNUMVERTEX 100

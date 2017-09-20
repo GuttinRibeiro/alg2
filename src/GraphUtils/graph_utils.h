@@ -1,6 +1,14 @@
 #ifndef GRAPH_UTILS_H
 #define GRAPH_UTILS_H
 
+#include <stdlib.h>
+
+#ifdef ADJACENCYLIST_GRAPH
+#include "../adjacencyList/adjacencyList.h"
+#else
+#include "../adjacencyMatrix/adjacencyMatrix.h"
+#endif
+
 #ifndef INF
 #define INF 100000
 #warning Please define the infinity value of weight.

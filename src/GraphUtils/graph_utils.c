@@ -103,31 +103,31 @@ weight _MaxWeight(weight *output, int n) {
     }
   }
 
-  return min;
+  return max;
 }
 
 int GraphEccentricity(Graph *g, weight *output) {
-  weight **output = _FWCreateMatrix(g->numVertex);
+  weight **fwoutput = _FWCreateMatrix(g->numVertex);
 
-  if(output == NULL) {
+  if(fwoutput == NULL) {
     return -1;
   }
 
-  FloydWarshall(g, output);
+  FloydWarshall(g, fwoutput);
 
   int i;
   for(i = 0; i < g->numVertex; i++) {
-    output[i] = _MaxWeight(g[i], g->numVertex, NULL);
+    output[i] = _MaxWeight(fwoutput[i], g->numVertex);
   }
 
-  _FWDestroyMatrix(output);
+  _FWDestroyMatrix(fwoutput, g->numVertex);
 
   return 0;
 }
 
 int GraphCentrality(Graph *g, vertex *central) {
   weight *output = (weight *)malloc(g->numVertex*sizeof(weight));
-  if(weight == NULL) {
+  if(output == NULL) {
     return -1;
   }
 

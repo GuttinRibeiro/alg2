@@ -1,6 +1,8 @@
 #ifndef ADJACENCYLIST_H
 #define ADJACENCYLIST_H
 
+#include <float.h>
+
 #define MAXNUMVERTEX 100
 #define INF FLT_MAX
 #define NINF FLT_MIN
