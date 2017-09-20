@@ -11,7 +11,11 @@ void _FWInit(Graph *g, weight **output) {
   for(i = 0; i < g->numVertex; i++) {
     int j;
     for(j = 0; j < g->numVertex; j++) {
-      output[i][j] = getWeight(g, i, j);
+      if(i == j) {
+        output[i][j] = 0.0;
+      } else {
+        output[i][j] = getWeight(g, i, j);
+      }
     }
   }
 }
@@ -93,13 +97,13 @@ weight _MinWeight(weight *output, int n, vertex *index) {
 /* _MaxWeight is an internal function that
  * return the maximum weight in a vector.
  */
-weight _MaxWeight(weight *output, int n) {
+weight _MaxWeightColumn(weight **output, vertex column, int n) {
   weight max = NINF;
 
   int i;
   for(i = 0; i < n; i++) {
-    if(output[i] > max && output[i] < INF) {
-      max = output[i];
+    if(output[i][column] > max && output[i][column] <= INF) {
+      max = output[i][column];
     }
   }
 
@@ -117,7 +121,15 @@ int GraphEccentricity(Graph *g, weight *output) {
 
   int i;
   for(i = 0; i < g->numVertex; i++) {
-    output[i] = _MaxWeight(fwoutput[i], g->numVertex);
+    int j;
+    for(j = 0; j < g->numVertex; j++) {
+      printf("%.2f ", fwoutput[i][j]);
+    }
+    printf("\n");
+  }
+
+  for(i = 0; i < g->numVertex; i++) {
+    output[i] = _MaxWeightColumn(fwoutput, i, g->numVertex);
   }
 
   _FWDestroyMatrix(fwoutput, g->numVertex);

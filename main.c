@@ -8,11 +8,11 @@ int main () {
   initGraph(&g, 5);
   insertDirectedLine(&g, 0, 1, 1.0);
   insertDirectedLine(&g, 1, 2, 2.0);
-  insertDirectedLine(&g, 2, 3, 4.0);
-  insertDirectedLine(&g, 3, 4, 5.0);
-  insertDirectedLine(&g, 4, 1, 1.0);
-  insertDirectedLine(&g, 2, 4, 2.0);
-  insertDirectedLine(&g, 4, 2, 3.0);
+  insertDirectedLine(&g, 2, 4, 4.0);
+  insertDirectedLine(&g, 4, 3, 5.0);
+  insertDirectedLine(&g, 3, 1, 1.0);
+  insertDirectedLine(&g, 2, 3, 2.0);
+  insertDirectedLine(&g, 3, 2, 3.0);
 
   vertex central = 0;
   GraphCentrality(&g, &central);
