@@ -2,6 +2,7 @@
 #define GRAPH_UTILS_H
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef ADJACENCYLIST_GRAPH
 #include "../adjacencyList/adjacencyList.h"
