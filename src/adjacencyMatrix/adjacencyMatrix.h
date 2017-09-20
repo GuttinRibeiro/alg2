@@ -1,7 +1,10 @@
 #ifndef ADJACENCYMATRIX_h
 #define ADJACENCYMATRIX_h
+#include <float.h>
 
 #define MAXNUMVERTEX 100
+#define INF FLT_MAX
+#define NINF FLT_MIN
 
 typedef int vertex;
 typedef float weight;
@@ -24,6 +27,7 @@ int checkLine(Graph *g, vertex u, vertex v); //Checks if there's a line from ver
 int removeLine(Graph *g, vertex u, vertex v); //Removes a line from vertex u to vertex v
 int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u.
 int getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u.
+weight getWeight(Graph *g, vertex u, vertex v);
 
 //Utils
 void printGraph(Graph *g); //Shows a representation of graph

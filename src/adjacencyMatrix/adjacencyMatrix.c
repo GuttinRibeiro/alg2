@@ -1,4 +1,4 @@
-#include <stdio.h>
+INF#include <stdio.h>
 #include "adjacencyMatrix.h"
 
 //Utils
@@ -23,7 +23,7 @@ int initGraph(Graph *g, int numVertex) {
   g->numVertex = numVertex;
   for(int i = 0; i < g->numVertex; i++) {
     for(int j = 0; j < g->numVertex; j++) {
-      g->matrix[i][j] = 0.0;
+      g->matrix[i][j] = INF;
     }
   }
 
@@ -44,7 +44,7 @@ int checkLine(Graph *g, vertex u, vertex v) {
     return -1;
   }
 
-  if(g->matrix[u][v] != 0.0) {
+  if(g->matrix[u][v] != INF) {
     return 1;
   }
 
@@ -56,7 +56,7 @@ int removeLine(Graph *g, vertex u, vertex v) {
     return -1;
   }
 
-  g->matrix[u][v] = 0.0;
+  g->matrix[u][v] = INF;
   return 1;
 }
 
@@ -66,7 +66,7 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
   }
 
   for(int i = 0; i < g->numVertex; i++) {
-    if(g->matrix[u][i] != 0.0) {
+    if(g->matrix[u][i] != INF) {
       return 1;
     }
   }
@@ -80,10 +80,14 @@ int getFirstNeighboor(Graph *g, vertex u) {
   }
 
   for(int i = 0; i < g->numVertex; i++) {
-    if(g->matrix[u][i] != 0.0) {
+    if(g->matrix[u][i] != INF) {
       return i;
     }
   }
 
   return 0;
+}
+
+weight getWeight(Graph *g, vertex u, vertex v) {
+  return g->matrix[u][v];
 }
