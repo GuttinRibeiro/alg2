@@ -5,6 +5,7 @@
  */
 int listInit(List *l) {
   l->first = NULL;
+  l->size++;
   return 0;
 }
 
@@ -21,6 +22,7 @@ int listPushFront(List *l, elemType elem) {
   newNode->next = l->first;
   l->first = newNode;
 
+  l->size++;
   return 0;
 }
 
@@ -45,6 +47,7 @@ int listRemoveByElem(List *l, elemType elem) {
     prev->next = curr->next;
   }
 
+  l->size--;
   free(curr);
   return 0;
 }
@@ -64,7 +67,7 @@ int listRemoveByIndex(List *l, unsigned int index) {
   } else {
     listNode *curr = l->first;
 
-    int i = 0;
+    unsigned int i = 0;
     while(curr != NULL && i < index-1) {
       curr = curr->next;
       i++;
@@ -77,12 +80,13 @@ int listRemoveByIndex(List *l, unsigned int index) {
     rm = curr->next;
 
     if(rm == NULL) {
-      remove -1;
+      return -1;
     }
 
     curr->next = rm->next;
   }
 
+  l->size--;
   free(rm);
   return 0;
 }
@@ -102,6 +106,37 @@ int listClean(List *l) {
   }
 
   l->first = NULL;
+  l->size = 0;
 
   return 0;
+}
+
+/* listIterator it;
+ * for(it = itrBegin(list); it != itrEnd(); itrNext(&it))
+ */
+
+listIterator itrBegin(List *l) {
+  return l->first;
+}
+
+listIterator itrEnd() {
+  return NULL;
+}
+
+void itrNext(listIterator *it) {
+  *it = (*it)->next;
+}
+
+unsigned int itrJump(listIterator *it, unsigned int jumpSize) {
+  unsigned int i = 0;
+  while(*it != NULL && i < jumpSize) {
+    *it = (*it)->next;
+    i++;
+  }
+
+  return i;
+}
+
+elemType itrValue(listIterator it) {
+  return it->value;
 }

@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "../List/list.h"
 
 #ifdef ADJACENCYLIST_GRAPH
 #include "../adjacencyList/adjacencyList.h"
@@ -19,6 +20,14 @@
 #define NINF -100000
 #warning Please define the minimum value of weight.
 #endif
+
+struct _PathCounterStructStaticInfo {
+  List **path;
+  vertex dest;
+  vertex k;
+  int *npath;
+  int *npathWithK;
+} PathCounter;
 
 /* FloydeWarshall will apply the Floyd-Warshall
  * Algorithm to solve the smallest path of any two

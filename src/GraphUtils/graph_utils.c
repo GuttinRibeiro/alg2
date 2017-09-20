@@ -20,26 +20,6 @@ void _FWInit(Graph *g, weight **output) {
   }
 }
 
-// external function
-void FloydWarshall(Graph *g, weight **output) {
-  _FWInit(g, output);
-
-  int k;
-  for(k = 0; k < g->numVertex; k++) {
-    int i;
-    for(i = 0; i < g->numVertex; i++) {
-      int j;
-      for(j = 0; j < g->numVertex; j++) {
-        weight aux = output[i][k] + output[k][j];
-
-        if(aux < output[i][j]) {
-          output[i][j] = aux;
-        }
-      }
-    }
-  }
-}
-
 /* _FWCreateMatrix is an internal function that
  * creates a matrix nxn.
  */
@@ -65,10 +45,45 @@ weight **_FWCreateMatrix(int n) {
   return matrix;
 }
 
+List **_FWCreatePathMatrix(int n) {
+  List **matrix = (List **)malloc(n*sizeof(List *));
+  if(matrix == NULL) {
+    return NULL;
+  }
+
+  int i;
+  for(i = 0; i < n; i++) {
+    matrix[i] = (List *)malloc(n*sizeof(List));
+    if(matrix[i] == NULL) {
+      while(--i >= 0) {
+        free(matrix[i]);
+      }
+      free(matrix);
+
+      return NULL;
+    }
+
+    int j;
+    for(j = 0; j < n; j++) {
+      listInit(&(matrix[i][j]));
+    }
+  }
+
+  return matrix;
+}
+
 /* _FWDestroyMatrix is an internal function that
  * deallocate the matrix created in _FWCreateMatrix
  */
 void _FWDestroyMatrix(weight **matrix, int n) {
+  int i;
+  for(i = 0; i < n; i++) {
+    free(matrix[i]);
+  }
+  free(matrix);
+}
+
+void _FWDestroyPathMatrix(List **matrix, int n) {
   int i;
   for(i = 0; i < n; i++) {
     free(matrix[i]);
@@ -110,6 +125,150 @@ weight _MaxWeightColumn(weight **output, vertex column, int n) {
   return max;
 }
 
+void FloydWarshall(Graph *g, weight **output) {
+  /* Tranform g in a matrix of weights, where
+   * the weight to itself is 0
+   */
+  _FWInit(g, output);
+
+  int k;
+  for(k = 0; k < g->numVertex; k++) {
+    int i;
+    for(i = 0; i < g->numVertex; i++) {
+      int j;
+      for(j = 0; j < g->numVertex; j++) {
+        weight aux = output[i][k] + output[k][j];
+
+        if(aux < output[i][j]) {
+          output[i][j] = aux;
+        }
+      }
+    }
+  }
+}
+
+void _FWPInit(Graph *g, weight **output, List **path) {
+  _FWInit(g, output);
+
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+    int j;
+    for(j = 0; j < g->numVertex; j++) {
+      listPushFront(&(path[i][j]), j);
+    }
+  }
+}
+
+void FloydWarshallPath(Graph *g, weight **output, List **path) {
+  /* Tranform g in a matrix of weights, where
+   * the weight to itself is 0
+   */
+
+  int k;
+  for(k = 0; k < g->numVertex; k++) {
+    int i;
+    for(i = 0; i < g->numVertex; i++) {
+      int j;
+      for(j = 0; j < g->numVertex; j++) {
+        weight aux = output[i][k] + output[k][j];
+
+        if(aux <= output[i][j]) {
+          if(aux < output[i][j]) {
+            listClean(&(path[i][j]));
+          }
+          listPushFront(&(path[i][j]), k);
+
+          output[i][j] = aux;
+        }
+      }
+    }
+  }
+}
+
+void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int isPathWithK) {
+  if(curr == p->dest) {
+    return;
+  }
+
+  *(p->npath) += p->path[curr][p->dest].size - 1;
+
+  if(isPathWithK) {
+    *(p->npathWithK) += p->path[curr][p->dest].size -1;
+  } else if(curr == p->k) {
+    isPathWithK = 1;
+    *(p->npathWithK) += 1;
+  }
+
+  listIterator it;
+  for(it = itrBegin(&(p->path[curr][p->dest])); it != itrEnd(); itrNext(&it)) {
+    _GraphPathCounter(p, itrValue(it), isPathWithK);
+  }
+}
+
+void GraphPathCounter(List **path, vertex initial, vertex dest, vertex k, int *npath, int *npathWithK) {
+  struct _PathCounterStructStaticInfo p;
+  p.path = path;
+  p.dest = dest;
+  p.k = k;
+  p.npath = npath;
+  p.npathWithK = npathWithK;
+
+  _GraphPathCounter(&p, initial, 0);
+}
+
+int GraphBetweenessCentrality(Graph *g, weight *output) {
+  weight **fwoutput = _FWCreateMatrix(g->numVertex);
+
+  if(fwoutput == NULL) {
+    return -1;
+  }
+
+  List **path = (List **)_FWCreatePathMatrix(g->numVertex);
+
+  if(path == NULL) {
+    _FWDestroyMatrix(fwoutput, g->numVertex);
+    return -1;
+  }
+
+  FloydWarshallPath(g, fwoutput, path);
+
+  int k;
+  for(k = 0; k < g->numVertex; k++) {
+    int npath = 1;
+    int npathWithK = 0;
+
+    int i;
+    for(i = 0; i < g->numVertex; i++) {
+      if(i == k) {
+        continue;
+      }
+
+      int j;
+      for(j = 0; j < g->numVertex; j++) {
+        if(j == k) {
+          continue;
+        }
+
+        GraphPathCounter(path, i, j, k, &npath, &npathWithK);
+      }
+    }
+
+    output[k] = npathWithK/npath;
+  }
+
+  _FWDestroyMatrix(fwoutput, g->numVertex);
+  _FWDestroyPathMatrix(path, g->numVertex);
+
+  return 0;
+}
+
+void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output) {
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+    output[i] = _MaxWeightColumn(FWoutput, i, g->numVertex);
+  }
+}
+
 int GraphEccentricity(Graph *g, weight *output) {
   weight **fwoutput = _FWCreateMatrix(g->numVertex);
 
@@ -128,13 +287,29 @@ int GraphEccentricity(Graph *g, weight *output) {
     printf("\n");
   }
 
-  for(i = 0; i < g->numVertex; i++) {
-    output[i] = _MaxWeightColumn(fwoutput, i, g->numVertex);
-  }
+  GraphEccentricityFW(g, fwoutput, output);
 
   _FWDestroyMatrix(fwoutput, g->numVertex);
 
   return 0;
+}
+
+int GraphCentralityFW(Graph *g, weight **FWoutput, vertex *central) {
+  weight *output = (weight *)malloc(g->numVertex*sizeof(weight));
+  if(output == NULL) {
+    return -1;
+  }
+
+  GraphEccentricityFW(g, FWoutput, output);
+
+  _MinWeight(output, g->numVertex, central);
+
+  free(output);
+  return 0;
+}
+
+void GraphCentralityEC(Graph *g, weight *ECoutput, vertex *central) {
+  _MinWeight(ECoutput, g->numVertex, central);
 }
 
 int GraphCentrality(Graph *g, vertex *central) {
@@ -147,7 +322,7 @@ int GraphCentrality(Graph *g, vertex *central) {
     return -2;
   }
 
-  _MinWeight(output, g->numVertex, central);
+  GraphCentralityEC(g, output, central);
 
   free(output);
   return 0;

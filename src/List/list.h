@@ -1,7 +1,10 @@
 #ifndef LIST_H
 #define LIST_H
 
-typedef (void *) elemType
+#include <stdlib.h>
+
+typedef int elemType;
+typedef int listSize;
 
 typedef struct _listNode {
   elemType value;
@@ -10,7 +13,16 @@ typedef struct _listNode {
 
 typedef struct _simpleList {
   listNode *first;
+  listSize size;
 } List;
+
+typedef listNode* listIterator;
+
+listIterator itrBegin(List *l);
+listIterator itrEnd();
+void itrNext(listIterator *it);
+unsigned int itrJump(listIterator *it, unsigned int jumpSize);
+elemType itrValue(listIterator it);
 
 /** listInit: initiate the list (*l)
  ** Complexity: O(1)
