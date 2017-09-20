@@ -149,3 +149,20 @@ vertex getFirstNeighboor(Graph *g, vertex u) {
 
   return (g->list[u]->id);
 }
+
+weight getWeight(Graph *g, vertex u, vertex v) {
+  if(u >= g->numVertex || v >= g->numVertex) {
+    return -1;
+  }
+
+  block *curr = g->list[u];
+  while(curr != NULL && curr.id != v) {
+    curr = curr->next;
+  }
+
+  if(curr == NULL) {
+    return INF;
+  }
+
+  return curr->value;
+}

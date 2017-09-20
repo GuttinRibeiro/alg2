@@ -1,8 +1,12 @@
 #include "graph_utils.h"
 
-/** Complexity: O(v^2)
+/* _FWInit is an internal function that prepares
+ * the output matrix for the FloydWarshall.
+ * Basicaly, this function transform the graph
+ * into a matrix representation of it
+ * Complexity: O(v^2)*O(getWeight)
  */
-void FWInit(Graph *g, weight **output) {
+void _FWInit(Graph *g, weight **output) {
   int i;
   for(i = 0; i < g->numVertex; i++) {
     int j;
@@ -12,10 +16,9 @@ void FWInit(Graph *g, weight **output) {
   }
 }
 
-/** Complexity: O(v^3)
- */
-void FloydeWarshall(Graph *g, weight **output) {
-  FWInit(g, output);
+// external function
+void FloydWarshall(Graph *g, weight **output) {
+  _FWInit(g, output);
 
   int k;
   for(k = 0; k < g->numVertex; k++) {
@@ -33,9 +36,10 @@ void FloydeWarshall(Graph *g, weight **output) {
   }
 }
 
-/** Complexity: O(v)
+/* _FWCreateMatrix is an internal function that
+ * creates a matrix nxn.
  */
-weight **FWCreateMatrix(int n) {
+weight **_FWCreateMatrix(int n) {
   weight **matrix = (weight **)malloc(n*sizeof(weight *));
   if(matrix == NULL) {
     return NULL;
@@ -57,9 +61,10 @@ weight **FWCreateMatrix(int n) {
   return matrix;
 }
 
-/** Complexity: O(v)
+/* _FWDestroyMatrix is an internal function that
+ * deallocate the matrix created in _FWCreateMatrix
  */
-void FWDestroyMatrix(weight **matrix, int n) {
+void _FWDestroyMatrix(weight **matrix, int n) {
   int i;
   for(i = 0; i < n; i++) {
     free(matrix[i]);
@@ -67,9 +72,11 @@ void FWDestroyMatrix(weight **matrix, int n) {
   free(matrix);
 }
 
-/** Complexity: O(v)
+/* _MinWeight is an internal function that
+ * returns the minimum weight in a vector
+ * and the index of such.
  */
-weight MinWeight(weight *output, int n, int *index) {
+weight _MinWeight(weight *output, int n, vertex *index) {
   weight min = INF;
 
   int i;
@@ -83,9 +90,10 @@ weight MinWeight(weight *output, int n, int *index) {
   return min;
 }
 
-/** Complexity: O(v)
+/* _MaxWeight is an internal function that
+ * return the maximum weight in a vector.
  */
-weight MaxWeight(weight *output, int n) {
+weight _MaxWeight(weight *output, int n) {
   weight max = NINF;
 
   int i;
@@ -98,29 +106,25 @@ weight MaxWeight(weight *output, int n) {
   return min;
 }
 
-/** Complexity: O(v^3)
- */
 int GraphEccentricity(Graph *g, weight *output) {
-  weight **output = FWCreateMatrix(g->numVertex);
+  weight **output = _FWCreateMatrix(g->numVertex);
 
   if(output == NULL) {
     return -1;
   }
 
-  FloydeWarshall(g, output);
+  FloydWarshall(g, output);
 
   int i;
   for(i = 0; i < g->numVertex; i++) {
-    output[i] = MaxWeight(g[i], g->numVertex, NULL);
+    output[i] = _MaxWeight(g[i], g->numVertex, NULL);
   }
 
-  FWDestroyMatrix(output);
+  _FWDestroyMatrix(output);
 
   return 0;
 }
 
-/** Complexity: O(v^3)
- */
 int GraphCentrality(Graph *g, vertex *central) {
   weight *output = (weight *)malloc(g->numVertex*sizeof(weight));
   if(weight == NULL) {
@@ -131,7 +135,7 @@ int GraphCentrality(Graph *g, vertex *central) {
     return -2;
   }
 
-  MinWeight(output, g->numVertex, central);
+  _MinWeight(output, g->numVertex, central);
 
   free(output);
   return 0;
