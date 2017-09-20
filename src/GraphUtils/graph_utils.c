@@ -1,4 +1,4 @@
-#include "graph_smallest_path.h"
+#include "graph_utils.h"
 
 /** Complexity: O(v^2)
  */

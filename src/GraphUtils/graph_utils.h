@@ -1,5 +1,5 @@
-#ifndef GRAPH_SMALLEST_PATH_H
-#define GRAPH_SMALLEST_PATH_H
+#ifndef GRAPH_UTILS_H
+#define GRAPH_UTILS_H
 
 #ifndef INF
 #define INF 10000
