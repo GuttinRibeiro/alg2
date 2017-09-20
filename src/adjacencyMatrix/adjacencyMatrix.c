@@ -1,4 +1,4 @@
-INF#include <stdio.h>
+#include <stdio.h>
 #include "adjacencyMatrix.h"
 
 //Utils
@@ -30,7 +30,7 @@ int initGraph(Graph *g, int numVertex) {
   return 1;
 }
 
-int insertLine(Graph *g, vertex u, vertex v, weight value) {
+int insertDirectedLine(Graph *g, vertex u, vertex v, weight value) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
@@ -39,7 +39,7 @@ int insertLine(Graph *g, vertex u, vertex v, weight value) {
   return 1;
 }
 
-int checkLine(Graph *g, vertex u, vertex v) {
+int checkDirectedLine(Graph *g, vertex u, vertex v) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
@@ -51,7 +51,7 @@ int checkLine(Graph *g, vertex u, vertex v) {
   return 0;
 }
 
-int removeLine(Graph *g, vertex u, vertex v) {
+int removeDirectedLine(Graph *g, vertex u, vertex v) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }
@@ -74,7 +74,7 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
   return 0;
 }
 
-int getFirstNeighboor(Graph *g, vertex u) {
+vertex getFirstNeighboor(Graph *g, vertex u) {
   if(u >= g->numVertex) {
     return -1;
   }

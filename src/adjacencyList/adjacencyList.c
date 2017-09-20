@@ -91,7 +91,7 @@ int insertDirectedLine(Graph *g, vertex u, vertex v, weight value) {
   return 1;
 }
 
-int checkLine(Graph *g, vertex u, vertex v) {
+int checkDirectedLine(Graph *g, vertex u, vertex v) {
   if(u >= g->numVertex || v >= g->numVertex) {
     return -1;
   }

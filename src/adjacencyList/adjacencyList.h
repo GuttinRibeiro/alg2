@@ -27,7 +27,7 @@ typedef struct {
 int initGraph(Graph *g, int numVertex); //Initializes a graph
 int finishGraph(Graph *g); //Finishes a graph
 int insertDirectedLine(Graph *g, vertex u, vertex v, weight value); //Inserts a directed line from vertex u to vertex v
-int checkLine(Graph *g, vertex u, vertex v); //Checks if there's a line between vertices u and v
+int checkDirectedLine(Graph *g, vertex u, vertex v); //Checks if there's a line between vertices u and v
 int removeDirectedLine(Graph *g, vertex u, vertex v); // Removes the directed line from vertex u to vertex v
 int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u
 vertex getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u
