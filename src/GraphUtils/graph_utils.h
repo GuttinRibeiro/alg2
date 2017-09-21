@@ -23,7 +23,7 @@
 
 struct _PathCounterStructStaticInfo {
   List **path;
-  vertex dest;
+  vertex initial;
   vertex k;
   int *npath;
   int *npathWithK;
