@@ -17,6 +17,9 @@ int main () {
   vertex central = 0;
   GraphCentrality(&g, &central);
 
+  weight *teste = malloc(g.numVertex * sizeof(weight));
+  GraphBetweenessCentrality(&g, teste);
+
   printf("Central: %d\n", central);
   return 0;
 }

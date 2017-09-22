@@ -68,4 +68,6 @@ int GraphEccentricity(Graph *g, weight *output);
  */
 int GraphCentrality(Graph *g, vertex *central);
 
+int GraphBetweenessCentrality(Graph *g, weight *output);
+
 #endif

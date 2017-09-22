@@ -159,6 +159,7 @@ void _FWPInit(Graph *g, weight **output, List **path) {
   for(i = 0; i < g->numVertex; i++) {
     int j;
     for(j = 0; j < g->numVertex; j++) {
+      listInit(&(path[i][j]));
       listPushFront(&(path[i][j]), i);
     }
   }
@@ -169,6 +170,8 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
    * the weight to itself is 0
    */
 
+   _FWPInit(g, output, path);
+
   int k;
   for(k = 0; k < g->numVertex; k++) {
     int i;
@@ -177,7 +180,7 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
       for(j = 0; j < g->numVertex; j++) {
         weight aux = output[i][k] + output[k][j];
 
-        if(aux <= output[i][j]) {
+        if(k != i && k != j && aux <= output[i][j]) {
           if(aux < output[i][j]) {
             listClean(&(path[i][j]));
           }
@@ -191,7 +194,9 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
 }
 
 void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int isPathWithK) {
+  printf("%d ", curr);
   if(curr == p->initial) {
+    printf("\n\n\n");
     return;
   }
 
@@ -204,8 +209,12 @@ void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int 
     *(p->npathWithK) += 1;
   }
 
+  int i = 0;
   listIterator it;
   for(it = itrBegin(&(p->path[p->initial][curr])); it != itrEnd(); itrNext(&it)) {
+    if(i++ > 0) {
+      printf("RAMIFICATION ");
+    }
     _GraphPathCounter(p, itrValue(it), isPathWithK);
   }
 }
