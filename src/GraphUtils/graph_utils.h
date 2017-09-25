@@ -38,7 +38,7 @@ struct _PathCounterStructStaticInfo {
  * Arguments: Graph *g         The graph to be use in the algorithm
  *            weight **output  The matrix that will hold the result
  * Return: (void)
- * Complexity: O(v^3)
+ * Complexity: O(V³)
  */
 void FloydWarshall(Graph *g, weight **output);
 
@@ -51,7 +51,7 @@ void FloydWarshall(Graph *g, weight **output);
  *            weight *output  The vector that will hold the result
  * Return: int  [-1] A error occur when allocating memory
  *              [0]  No error
- * Complexity: O(v^3)
+ * Complexity: O(V³)
  */
 int GraphEccentricity(Graph *g, weight *output);
 
@@ -64,7 +64,7 @@ int GraphEccentricity(Graph *g, weight *output);
  * Return: int  [-2] A error occur when calculating the eccentricity
  *              [-1] A error occur when allocating memory
  *              [0]  No error
- * Complexity: O(v^3)
+ * Complexity: O(V³)
  */
 int GraphCentrality(Graph *g, vertex *central);
 

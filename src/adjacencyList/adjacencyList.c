@@ -142,6 +142,38 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
   return 1;
 }
 
+weight **getMatrix(Graph *g) {
+  weight **matrix = (weight **)malloc((g->numVertex)*sizeof(weight *));
+  if(matrix == NULL) {
+    return NULL;
+  }
+
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+    matrix[i] = (weight *)malloc((g->numVertex)*sizeof(weight));
+    if(matrix[i] == NULL) {
+      //Removing all positions that was allocated
+      while(--i >= 0) {
+        free(matrix[i]);
+      }
+      free(matrix);
+      return NULL;
+    }
+  }
+
+  //O(V+A) => to create a copy of an adjacency list
+  block *curr;
+  for(i = 0; i < g->numVertex; i++) {
+    curr = g->list[i];
+    while(curr != NULL) {
+      matrix[i][curr->id] = curr->value;
+      curr = curr->next;
+    }
+  }
+
+  return matrix;
+}
+
 vertex getFirstNeighboor(Graph *g, vertex u) {
   if(u >= g->numVertex || g->list[u] == NULL) {
     return -1;
@@ -156,7 +188,7 @@ weight getWeight(Graph *g, vertex u, vertex v) {
   }
 
   block *curr = g->list[u];
-  while(curr != NULL && curr.id != v) {
+  while(curr != NULL && curr->id != v) {
     curr = curr->next;
   }
 

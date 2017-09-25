@@ -34,8 +34,9 @@ int insertDirectedLine(Graph *g, vertex u, vertex v, weight value); //Inserts a 
 int checkDirectedLine(Graph *g, vertex u, vertex v); //Checks if there's a line between vertices u and v
 int removeDirectedLine(Graph *g, vertex u, vertex v); // Removes the directed line from vertex u to vertex v
 int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u
+weight **getMatrix(Graph *g); //Returns a copy of these representation as an adjacency matrix
 vertex getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u
-weight getWeight(Graph *g, vertex u, vertex v);
+weight getWeight(Graph *g, vertex u, vertex v); //Returns the value of the line from vertex u to vertex v
 
 //Utils
 void printGraph(Graph *g); //Shows a representation of a graph

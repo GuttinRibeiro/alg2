@@ -11,7 +11,7 @@ typedef int vertex;
 typedef float weight;
 
 typedef struct {
-  weight matrix[MAXNUMVERTEX][MAXNUMVERTEX];
+  weight **matrix;
   int numVertex;
 } Graph;
 
@@ -22,6 +22,7 @@ typedef struct {
    1 : indicates that the function has been performed or that it logical value is equal to true
 */
 //The graph considers that the vertex counting start at zero
+int initSquareMatrix(weight **matrix, int size); //Initializes a square matrix
 int initGraph(Graph *g, int numVertex); //Initializes a graph
 int insertDirectedLine(Graph *g, vertex u, vertex v, weight value); //Inserts a directed line from vertex u to vertex v
 int checkDirectedLine(Graph *g, vertex u, vertex v); //Checks if there's a line from vertex u to vertex v
@@ -29,6 +30,7 @@ int removeDirectedLine(Graph *g, vertex u, vertex v); //Removes a line from vert
 int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u
 vertex getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u
 weight getWeight(Graph *g, vertex u, vertex v); //Returns the weight of line from vertex u to vertex v
+weight **getMatrix(Graph *g); //Returns a copy of these representation as an adjacency matrix
 
 //Utils
 void printGraph(Graph *g); //Shows a representation of graph
