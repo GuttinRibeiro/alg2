@@ -152,10 +152,11 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
 }
 
 void getMatrix(Graph *g, weight **matrix) {
-  initSquareMatrix(g, g->numVertex);
+  initSquareMatrix(matrix, g->numVertex);
 
   //O(V+A) => to create a copy of an adjacency list
   block *curr;
+  int i;
   for(i = 0; i < g->numVertex; i++) {
     curr = g->list[i];
     while(curr != NULL) {

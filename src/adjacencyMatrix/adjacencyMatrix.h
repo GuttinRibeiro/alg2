@@ -22,7 +22,6 @@ typedef struct {
    1 : indicates that the function has been performed or that it logical value is equal to true
 */
 //The graph considers that the vertex counting start at zero
-int initSquareMatrix(weight **matrix, int size); //Initializes a square matrix
 int initGraph(Graph *g, int numVertex); //Initializes a graph
 int insertDirectedLine(Graph *g, vertex u, vertex v, weight value); //Inserts a directed line from vertex u to vertex v
 int checkDirectedLine(Graph *g, vertex u, vertex v); //Checks if there's a line from vertex u to vertex v

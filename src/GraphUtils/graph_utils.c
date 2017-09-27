@@ -211,7 +211,6 @@ void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int 
     *(p->npathWithK) += 1;
   }
 
-  int i = 0;
   listIterator it;
   for(it = itrBegin(&(p->path[p->initial][curr])); it != itrEnd(); itrNext(&it)) {
     _GraphPathCounter(p, itrValue(it), isPathWithK);
