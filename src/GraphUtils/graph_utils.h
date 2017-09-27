@@ -5,11 +5,7 @@
 #include <stdio.h>
 #include "../List/list.h"
 
-#ifdef ADJACENCYLIST_GRAPH
 #include "../adjacencyList/adjacencyList.h"
-#else
-#include "../adjacencyMatrix/adjacencyMatrix.h"
-#endif
 
 #ifndef INF
 #define INF 100000

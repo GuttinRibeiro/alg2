@@ -1,25 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "src/adjacencyMatrix/adjacencyMatrix.h"
+#include "src/adjacencyList/adjacencyList.h"
 #include "src/GraphUtils/graph_utils.h"
 
 int main () {
+  int numCities, numRoads;
+  scanf("%d %d", &numCities, &numRoads);
+  printf("numCities: %d numRoads: %d\n", numCities, numRoads);
+
+  int numStudents[numCities];
+  int i;
+  for(i = 0; i < numCities; i++) {
+    scanf(" %d", &numStudents[i]);
+    printf("%d\n", numStudents[i]);
+  }
+  printf("\n");
+
   Graph g;
-  initGraph(&g, 5);
-  insertDirectedLine(&g, 0, 1, 1.0);
-  insertDirectedLine(&g, 1, 2, 2.0);
-  insertDirectedLine(&g, 2, 4, 4.0);
-  insertDirectedLine(&g, 4, 3, 5.0);
-  insertDirectedLine(&g, 3, 1, 1.0);
-  insertDirectedLine(&g, 2, 3, 2.0);
-  insertDirectedLine(&g, 3, 2, 3.0);
+  initGraph(&g, numCities);
+  weight aux;
+  vertex origin, destination;
+  for(i = 0; i < numRoads; i++) {
+    scanf(" %d %d %f", &origin, &destination, &aux);
+    printf("origin: %d destination: %d aux: %f\n", origin, destination, aux);
+    insertDirectedLine(&g, origin, destination, aux);
+  }
 
-  vertex central = 0;
-  GraphCentrality(&g, &central);
+  
 
-  weight *teste = malloc(g.numVertex * sizeof(weight));
-  GraphBetweenessCentrality(&g, teste);
-
-  printf("Central: %d\n", central);
+  printGraph(&g);
   return 0;
 }

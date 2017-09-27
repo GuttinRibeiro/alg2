@@ -242,7 +242,8 @@ void GraphBetweenessCentralityFWP(Graph *g, weight *output, List **path) {
 
 int GraphBetweenessCentrality(Graph *g, weight *output) {
   //weight **fwoutput = _FWCreateMatrix(g->numVertex);
-  weight **fwoutput = getMatrix(g);
+  weight **fwoutput = NULL;
+  getMatrix(g, fwoutput);
 
   if(fwoutput == NULL) {
     return -1;
@@ -274,7 +275,8 @@ void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output) {
 
 int GraphEccentricity(Graph *g, weight *output) {
   //weight **fwoutput = _FWCreateMatrix(g->numVertex);
-  weight **fwoutput = getMatrix(g);
+  weight **fwoutput = NULL;
+  getMatrix(g, fwoutput);
 
   if(fwoutput == NULL) {
     return -1;

@@ -11,7 +11,7 @@ void printGraph(Graph *g) {
     block *curr = g->list[i];
     printf("Line %d: ", i);
     while(curr != NULL) {
-      printf("%d ", curr->id);
+      printf("%f ", curr->value);
       curr = curr->next;
     }
     printf("\n");
