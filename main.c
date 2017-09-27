@@ -9,7 +9,7 @@ int main () {
   printf("numCities: %d numRoads: %d\n", numCities, numRoads);
 
   int numStudents[numCities];
-  int i;
+  int i, j;
   for(i = 0; i < numCities; i++) {
     scanf(" %d", &numStudents[i]);
     printf("%d\n", numStudents[i]);
@@ -26,8 +26,24 @@ int main () {
     insertDirectedLine(&g, origin, destination, aux);
   }
 
-  
+  weight **matrixFW = _FWCreateMatrix(numCities);
+  FloydWarshall(&g, matrixFW);
 
-  printGraph(&g);
+  for(i = 0; i < numCities; i++) {
+    for(j = 0; j < numCities; j++) {
+      matrixFW[i][j] *= numStudents[j];
+      printf("%.2f ", matrixFW[i][j]);
+    }
+    printf("\n");
+  }
+  printf("\n");
+
+  vertex central;
+  GraphCentrality(&g, &central);
+  printf("%d\n", central);
+
+  _FWDestroyMatrix(matrixFW, numCities);
+
+  //printGraph(&g);
   return 0;
 }

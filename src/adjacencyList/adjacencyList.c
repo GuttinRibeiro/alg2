@@ -6,8 +6,8 @@
 void printGraph(Graph *g) {
   printf("Number of vertex: %d\n", g->numVertex);
   printf("Graph representation: adjacency list\n");
-
-  for(int i = 0; i < g->numVertex; i++) {
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
     block *curr = g->list[i];
     printf("Line %d: ", i);
     while(curr != NULL) {
@@ -60,7 +60,8 @@ int finishGraph(Graph *g) {
   }
 
   block *curr;
-  for(int i = 0; i < g->numVertex; i++) {
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
       curr = g->list[i];
       while(curr != NULL) {
         g->list[i] = g->list[i]->next;

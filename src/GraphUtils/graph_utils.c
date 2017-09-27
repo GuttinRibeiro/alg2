@@ -5,6 +5,7 @@
  * Basicaly, this function transform the graph
  * into a matrix representation of it
  */
+//-----------------------------------------------------------
 void _FWInit(Graph *g, weight **output) {
   getMatrix(g, output);
 }
@@ -12,6 +13,7 @@ void _FWInit(Graph *g, weight **output) {
 /* _FWCreateMatrix is an internal function that
  * creates a matrix nxn.
  */
+//--------------------------------------------------------
 weight **_FWCreateMatrix(int n) {
   weight **matrix = (weight **)malloc(n*sizeof(weight *));
   if(matrix == NULL) {
@@ -67,6 +69,7 @@ List **_FWCreatePathMatrix(int n) {
 /* _FWDestroyMatrix is an internal function that
  * deallocate the matrix created in _FWCreateMatrix
  */
+//----------------------------------------------------- 
 void _FWDestroyMatrix(weight **matrix, int n) {
   int i;
   for(i = 0; i < n; i++) {
@@ -124,7 +127,7 @@ weight _MaxWeightColumn(weight **output, vertex column, int n) {
 
   return max;
 }
-
+//---------------------------------------------------------------------
 void FloydWarshall(Graph *g, weight **output) {
   /* Tranform g in a matrix of weights, where
    * the weight to itself is 0
@@ -265,6 +268,7 @@ int GraphCentralityFW(Graph *g, weight **FWoutput, vertex *central) {
   return 0;
 }
 
+//ME DA UM BOM MOTIVO PRA MANTER ESSA FUNÇÃO QUE NÃO FAZ PORRA NENHUMA E NÃO TEM NOME CLARO
 void GraphCentralityEC(Graph *g, weight *ECoutput, vertex *central) {
   _MinWeight(ECoutput, g->numVertex, central);
 }
@@ -349,6 +353,7 @@ int GraphCentralBetweeness(Graph *g, vertex *central) {
 
 }
 
+//ME DA UM BOM MOTIVO PRA MANTER ESSA FUNÇÃO QUE NÃO FAZ PORRA NENHUMA E NÃO TEM NOME CLARO
 void GraphCentralBetweenessBC(Graph *g, weight *BCoutput, vertex *central) {
   _MinWeight(BCoutput, g->numVertex, central);
 }
