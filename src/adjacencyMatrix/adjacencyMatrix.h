@@ -30,7 +30,7 @@ int removeDirectedLine(Graph *g, vertex u, vertex v); //Removes a line from vert
 int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u
 vertex getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u
 weight getWeight(Graph *g, vertex u, vertex v); //Returns the weight of line from vertex u to vertex v
-weight **getMatrix(Graph *g); //Returns a copy of these representation as an adjacency matrix
+void getMatrix(Graph *g, weight **matrix); //Returns a copy of these representation as an adjacency matrix
 
 //Utils
 void printGraph(Graph *g); //Shows a representation of graph

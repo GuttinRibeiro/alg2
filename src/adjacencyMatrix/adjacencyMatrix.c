@@ -122,20 +122,17 @@ weight getWeight(Graph *g, vertex u, vertex v) {
   return g->matrix[u][v];
 }
 
-weight **getMatrix(Graph *g) {
-  weight **copy = NULL;
+void getMatrix(Graph *g, weight **matrix) {
 
   //O(V²) => to create a copy of an adjacency matrix
-  if(!initSquareMatrix(copy, g->numVertex)) {
-    return NULL;
+  if(!initSquareMatrix(matrix, g->numVertex)) {
+    return;
   }
 
   int i, j;
   for(i = 0; i < g->numVertex; i++) {
     for (j = 0; j < g->numVertex; j++) {
-        copy[i][j] = g->matrix[i][j];
+        matrix[i][j] = g->matrix[i][j];
     }
   }
-
-  return copy;
 }

@@ -32,6 +32,37 @@ void printBlock(block *u) {
 }
 
 //Graph's functions
+int initSquareMatrix(weight **matrix, int size) {
+  if(size > MAXNUMVERTEX) {
+    return 0;
+  }
+
+  matrix = (weight **)malloc(size*sizeof(weight *));
+  if(matrix == NULL) {
+    return 0;
+  }
+
+  int i, j;
+  for(i = 0; i < size; i++) {
+    matrix[i] = (weight *)malloc(size*sizeof(weight));
+    if(matrix[i] == NULL) {
+      //Removing all positions that was allocated
+      while(--i >= 0) {
+        free(matrix[i]);
+      }
+      free(matrix);
+      return 0;
+    }
+    else {
+      for(j = 0; j < size; j++) {
+        matrix[i][j] = INF;
+      }
+    }
+  }
+
+  return 1;
+}
+
 int initGraph(Graph *g, int numVertex) {
   if(numVertex > MAXNUMVERTEX) {
     return -1;
@@ -142,10 +173,10 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
   return 1;
 }
 
-weight **getMatrix(Graph *g) {
-  weight **matrix = (weight **)malloc((g->numVertex)*sizeof(weight *));
+void getMatrix(Graph *g, weight **matrix) {
+  matrix = (weight **)malloc((g->numVertex)*sizeof(weight *));
   if(matrix == NULL) {
-    return NULL;
+    return;
   }
 
   int i;
@@ -157,7 +188,7 @@ weight **getMatrix(Graph *g) {
         free(matrix[i]);
       }
       free(matrix);
-      return NULL;
+      return;
     }
   }
 
@@ -170,8 +201,6 @@ weight **getMatrix(Graph *g) {
       curr = curr->next;
     }
   }
-
-  return matrix;
 }
 
 vertex getFirstNeighboor(Graph *g, vertex u) {
