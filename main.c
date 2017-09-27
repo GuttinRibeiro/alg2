@@ -26,6 +26,8 @@ int main () {
     insertDirectedLine(&g, origin, destination, aux);
   }
 
+  
+
   printGraph(&g);
   return 0;
 }
