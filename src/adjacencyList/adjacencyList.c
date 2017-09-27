@@ -32,35 +32,13 @@ void printBlock(block *u) {
 }
 
 //Graph's functions
-int initSquareMatrix(weight **matrix, int size) {
-  if(size > MAXNUMVERTEX) {
-    return 0;
-  }
-
-  matrix = (weight **)malloc(size*sizeof(weight *));
-  if(matrix == NULL) {
-    return 0;
-  }
-
+void initSquareMatrix(weight **matrix, int size) {
   int i, j;
   for(i = 0; i < size; i++) {
-    matrix[i] = (weight *)malloc(size*sizeof(weight));
-    if(matrix[i] == NULL) {
-      //Removing all positions that was allocated
-      while(--i >= 0) {
-        free(matrix[i]);
-      }
-      free(matrix);
-      return 0;
-    }
-    else {
-      for(j = 0; j < size; j++) {
-        matrix[i][j] = INF;
-      }
+    for(j = 0; j < size; j++) {
+      matrix[i][j] = INF;
     }
   }
-
-  return 1;
 }
 
 int initGraph(Graph *g, int numVertex) {

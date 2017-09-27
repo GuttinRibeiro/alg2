@@ -34,6 +34,9 @@ weight **_FWCreateMatrix(int n) {
   return matrix;
 }
 
+/* _FWCreatePathMatrix is an internal function
+ * that creates a matrix nxn of List
+ */
 List **_FWCreatePathMatrix(int n) {
   List **matrix = (List **)malloc(n*sizeof(List *));
   if(matrix == NULL) {
@@ -72,6 +75,9 @@ void _FWDestroyMatrix(weight **matrix, int n) {
   free(matrix);
 }
 
+/* _FWDestroyPathMatrix is an internal function
+ * that deallocate the matrix created in _FWCreatePathMatrix
+ */
 void _FWDestroyPathMatrix(List **matrix, int n) {
   int i;
   for(i = 0; i < n; i++) {
@@ -141,6 +147,9 @@ void FloydWarshall(Graph *g, weight **output) {
   }
 }
 
+/* _FWPInit initiates the output and path matrix
+ * to be used in FloydeWarshallPath
+ */
 void _FWPInit(Graph *g, weight **output, List **path) {
   _FWInit(g, output);
 
@@ -158,7 +167,6 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
   /* Tranform g in a matrix of weights, where
    * the weight to itself is 0
    */
-
    _FWPInit(g, output, path);
 
   int k;
@@ -182,6 +190,13 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
   }
 }
 
+/* _GraphPathCounter is an internal and recursive
+ * function that counts the number of minimum paths
+ * from an initial vertex (inside *p) to an current
+ * vertex, also, this functions counts the number
+ * of such minumum paths that pass through a
+ * vertex k
+ */
 void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int isPathWithK) {
   if(curr == p->initial) {
     return;
@@ -214,58 +229,6 @@ void GraphPathCounter(List **path, vertex initial, vertex dest, vertex k, int *n
   _GraphPathCounter(&p, dest, 0);
 }
 
-void GraphBetweenessCentralityFWP(Graph *g, weight *output, List **path) {
-  int k;
-  for(k = 0; k < g->numVertex; k++) {
-    int npath = 1;
-    int npathWithK = 0;
-
-    int i;
-    for(i = 0; i < g->numVertex; i++) {
-      if(i == k) {
-        continue;
-      }
-
-      int j;
-      for(j = 0; j < g->numVertex; j++) {
-        if(j == k) {
-          continue;
-        }
-
-        GraphPathCounter(path, i, j, k, &npath, &npathWithK);
-      }
-    }
-
-    output[k] = npathWithK/npath;
-  }
-}
-
-int GraphBetweenessCentrality(Graph *g, weight *output) {
-  //weight **fwoutput = _FWCreateMatrix(g->numVertex);
-  weight **fwoutput = NULL;
-  getMatrix(g, fwoutput);
-
-  if(fwoutput == NULL) {
-    return -1;
-  }
-
-  List **path = (List **)_FWCreatePathMatrix(g->numVertex);
-
-  if(path == NULL) {
-    _FWDestroyMatrix(fwoutput, g->numVertex);
-    return -1;
-  }
-
-  FloydWarshallPath(g, fwoutput, path);
-
-  GraphBetweenessCentralityFWP(g, output, path);
-
-  _FWDestroyMatrix(fwoutput, g->numVertex);
-  _FWDestroyPathMatrix(path, g->numVertex);
-
-  return 0;
-}
-
 void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output) {
   int i;
   for(i = 0; i < g->numVertex; i++) {
@@ -274,24 +237,13 @@ void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output) {
 }
 
 int GraphEccentricity(Graph *g, weight *output) {
-  //weight **fwoutput = _FWCreateMatrix(g->numVertex);
-  weight **fwoutput = NULL;
-  getMatrix(g, fwoutput);
+  weight **fwoutput = _FWCreateMatrix(g->numVertex);
 
   if(fwoutput == NULL) {
     return -1;
   }
 
   FloydWarshall(g, fwoutput);
-
-  int i;
-  for(i = 0; i < g->numVertex; i++) {
-    int j;
-    for(j = 0; j < g->numVertex; j++) {
-      printf("%.2f ", fwoutput[i][j]);
-    }
-    printf("\n");
-  }
 
   GraphEccentricityFW(g, fwoutput, output);
 
@@ -325,11 +277,91 @@ int GraphCentrality(Graph *g, vertex *central) {
   }
 
   if(GraphEccentricity(g, output) != 0) {
+    free(output);
     return -2;
   }
 
   GraphCentralityEC(g, output, central);
 
   free(output);
+  return 0;
+}
+
+void GraphBetweenessCentralityFWP(Graph *g, weight *output, List **path) {
+  int k;
+  for(k = 0; k < g->numVertex; k++) {
+    int npath = 1;
+    int npathWithK = 0;
+
+    int i;
+    for(i = 0; i < g->numVertex; i++) {
+      int j;
+      for(j = 0; j < g->numVertex; j++) {
+        if(i != k && j != k) {
+          GraphPathCounter(path, i, j, k, &npath, &npathWithK);
+        }
+      }
+    }
+
+    output[k] = npathWithK/npath;
+  }
+}
+
+int GraphBetweenessCentrality(Graph *g, weight *output) {
+  weight **fwoutput = _FWCreateMatrix(g->numVertex);
+
+  if(fwoutput == NULL) {
+    return -1;
+  }
+
+  List **path = (List **)_FWCreatePathMatrix(g->numVertex);
+
+  if(path == NULL) {
+    _FWDestroyMatrix(fwoutput, g->numVertex);
+    return -1;
+  }
+
+  FloydWarshallPath(g, fwoutput, path);
+
+  GraphBetweenessCentralityFWP(g, output, path);
+
+  _FWDestroyMatrix(fwoutput, g->numVertex);
+  _FWDestroyPathMatrix(path, g->numVertex);
+
+  return 0;
+}
+
+int GraphCentralBetweeness(Graph *g, vertex *central) {
+  weight *output = (weight *)malloc(g->numVertex*sizeof(weight));
+  if(output == NULL) {
+    return -1;
+  }
+
+  if(GraphBetweenessCentrality(g, output) < 0) {
+    free(output);
+    return -2;
+  }
+
+  _MinWeight(output, g->numVertex, central);
+
+  free(output);
+  return 0;
+
+
+}
+
+void GraphCentralBetweenessBC(Graph *g, weight *BCoutput, vertex *central) {
+  _MinWeight(BCoutput, g->numVertex, central);
+}
+
+int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central) {
+  weight *output = (weight *)malloc(g->numVertex*sizeof(weight));
+  if(output == NULL) {
+    return -1;
+  }
+
+  GraphBetweenessCentralityFWP(g, output, path);
+
+  _MinWeight(output, g->numVertex, central);
   return 0;
 }

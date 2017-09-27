@@ -37,9 +37,7 @@ int initGraph(Graph *g, int numVertex) {
   }
 
   g->numVertex = numVertex;
-  if(initSquareMatrix(g->matrix, g->numVertex)) {
-    return 0;
-  }
+  initSquareMatrix(g->matrix, g->numVertex));
 
   return 1;
 }

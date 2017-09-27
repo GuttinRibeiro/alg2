@@ -57,9 +57,6 @@ void FloydWarshall(Graph *g, weight **output);
  */
 void FloydWarshallPath(Graph *g, weight **output, List **path);
 
-int GraphBetweenessCentrality(Graph *g, weight *output);
-void GraphBetweenessCentralityFWP(Graph *g, weight *output, List **path);
-
 /* GraphEccentricity will calculate the eccentricity
  * of ALL vertex using Floyd-Warshall Algorithm.
  * The output will be a vector 1xv, where v is the
@@ -73,21 +70,128 @@ void GraphBetweenessCentralityFWP(Graph *g, weight *output, List **path);
  */
 int GraphEccentricity(Graph *g, weight *output);
 
-/* GraphCentrality will calculate the most central
- * vertex in the Graph using eccentricity.
- * The output will be a vertex *central
+/* GraphEccentricityFW will calculate the eccentricity
+ * of ALL vertex using the output of a previous execution
+ * of the Floyd-Warshall Algorithm (FWoutput).
+ * The output will be a vector 1xv, where v is the
+ * number of vertex in the graph g
  *
- * Arguments: Graph *g         The graph to be use in the algorithm
- *            vertex *central  The variable that will hold the result
- * Return: int  [-2] A error occur when calculating the eccentricity
- *              [-1] A error occur when allocating memory
+ * Arguments: Graph *g            The graph to be use in the algorithm
+ *            weight **FWoutput   The output of FloydWarshall
+ *            weight *output      The vector that will hold the result
+ * Return: (void)
+ * Complexity: O(V²)
+ */
+void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output);
+
+/* GraphCentrality will calculate the central vertex
+ * using the eccentricity.
+ * The output will be a vertex (*central)
+ *
+ * Arguments: Graph *g          The graph to be use in the algorithm
+ *            vertex *central   The central vertex (output)
+ * Return: int  [-1] A error occur when allocating memory
+                [-2] A error occur when calculating eccentricity
  *              [0]  No error
  * Complexity: O(V³)
  */
-
-void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output);
 int GraphCentrality(Graph *g, vertex *central);
+
+/* GraphCentralityFW will calculate the central vertex
+ * using the output of a previous execution of the
+ * Floyd-Warshall Algorithm (FWoutput).
+ * The output will be a vertex (*central)
+ *
+ * Arguments: Graph *g          The graph to be use in the algorithm
+ *            weight **FWoutput   The output of FloydWarshall
+ *            vertex *central   The central vertex (output)
+ * Return: int  [-1] A error occur when allocating memory
+ *              [0]  No error
+ * Complexity: O(V²)
+ */
 int GraphCentralityFW(Graph *g, weight **FWoutput, vertex *central);
+
+/* GraphCentralityEC will calculate the central vertex
+ * using the output of a previous execution of the
+ * GraphEccentricity (ECoutput).
+ * The output will be a vertex (*central)
+ *
+ * Arguments: Graph *g          The graph to be use in the algorithm
+ *            weight *ECoutput   The output of GraphEccentricity
+ *            vertex *central   The central vertex (output)
+ * Return: int  [-1] A error occur when allocating memory
+ *              [0]  No error
+ * Complexity: O(V)
+ */
 void GraphCentralityEC(Graph *g, weight *ECoutput, vertex *central);
+
+/* GraphBetweenessCentrality will calculate the
+ * betweeness centrality using Floyd-Warshall
+ * Algorithm.
+ * The output will be a vector 1xv, where v is the
+ * number of vertex in the graph g
+ *
+ * Arguments: Graph *g        The graph to be use in the algorithm
+ *            weight *output  The vector that will hold the result
+ * Return: int  [-1] A error occur when allocating memory
+ *              [0]  No error
+ * Complexity: O(V³) - worst-case O(V⁴)
+ */
+int GraphBetweenessCentrality(Graph *g, weight *output);
+
+/* GraphBetweenessCentralityFWP will calculate the
+ * betweeness centrality using the output of a
+ * previous Floyd-Warshall Algorithm (path).
+ * The output will be a vector 1xv, where v is the
+ * number of vertex in the graph g
+ *
+ * Arguments: Graph *g        The graph to be use in the algorithm
+ *            weight *output  The vector that will hold the result
+ *            List **path     The path output of FloydeWarshallPath
+ * Return: (void)
+ * Complexity: O(V³) - worst-case O(V⁴)
+ */
+void GraphBetweenessCentralityFWP(Graph *g, weight *output, List **path);
+
+/* GraphCentralBetweeness will calculate the
+ * central vertex using the Betweeness Centrality.
+ * The output will be a vertex (*central)
+ *
+ * Arguments: Graph *g          The graph to be use in the algorithm
+ *            vertex *central   The central vertex (output)
+ * Return: int  [-1] A error occur when allocating memory
+                [-2] A error occur when calculating the betweeness centrality
+ *              [0]  No error
+ * Complexity: O(V³) - worst-case O(V⁴)
+ */
+int GraphCentralBetweeness(Graph *g, vertex *central);
+
+/* GraphCentralBetweenessBC will calculate the
+ * central vertex using a previous output of
+ * Betweeness Centrality algorithm.
+ * The output will be a vertex (*central)
+ *
+ * Arguments: Graph *g          The graph to be use in the algorithm
+ *            weight *BCoutput  The output of GraphBetweenessCentrality
+ *            vertex *central   The central vertex (output)
+ * Return: (void)
+ * Complexity: O(V)
+ */
+void GraphCentralBetweenessBC(Graph *g, weight *BCoutput, vertex *central);
+
+/* GraphCentralBetweenessFWP will calculate the
+ * central vertex using the Betweeness Centrality
+ * and a previous output of Betweeness Centrality
+ * algorithm.
+ * The output will be a vertex (*central)
+ *
+ * Arguments: Graph *g          The graph to be use in the algorithm
+ *            List **path     The path output of FloydeWarshallPath
+ *            vertex *central   The central vertex (output)
+ * Return: int  [-1] A error occur when allocating memory
+ *              [0]  No error
+ * Complexity: O(V³) - worst-case O(V⁴)
+ */
+ int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central);
 
 #endif
