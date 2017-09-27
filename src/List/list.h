@@ -16,14 +16,6 @@ typedef struct _simpleList {
   listSize size;
 } List;
 
-typedef listNode* listIterator;
-
-listIterator itrBegin(List *l);
-listIterator itrEnd();
-void itrNext(listIterator *it);
-unsigned int itrJump(listIterator *it, unsigned int jumpSize);
-elemType itrValue(listIterator it);
-
 /** listInit: initiate the list (*l)
  ** Complexity: O(1)
  */
@@ -48,5 +40,33 @@ int listRemoveByIndex(List *l, unsigned int index);
  ** Complexity: O(size)
  */
 int listClean(List *l);
+
+/* Iterator */
+typedef listNode* listIterator;
+
+/** itrBegin initiate list iterator
+ ** Complexity: O(1)
+ */
+listIterator itrBegin(List *l);
+
+/** itrEnd returns the final
+ ** Complexity: O(1)
+ */
+listIterator itrEnd();
+
+/** itrNext walks on the list
+ ** Complexity: O(1)
+ */
+void itrNext(listIterator *it);
+
+/** itrJump walks jumpSize elements on the list
+ ** Complexity: O(jumpSize)
+ */
+unsigned int itrJump(listIterator *it, unsigned int jumpSize);
+
+/** itrValue returns the value of the current element
+ ** Complexity: O(1)
+ */
+elemType itrValue(listIterator it);
 
 #endif

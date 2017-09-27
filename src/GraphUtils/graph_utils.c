@@ -4,20 +4,9 @@
  * the output matrix for the FloydWarshall.
  * Basicaly, this function transform the graph
  * into a matrix representation of it
- * Complexity: O(v^2)*O(getWeight)
  */
 void _FWInit(Graph *g, weight **output) {
-  int i;
-  for(i = 0; i < g->numVertex; i++) {
-    int j;
-    for(j = 0; j < g->numVertex; j++) {
-      if(i == j) {
-        output[i][j] = 0.0;
-      } else {
-        output[i][j] = getWeight(g, i, j);
-      }
-    }
-  }
+  getMatrix(g, output);
 }
 
 /* _FWCreateMatrix is an internal function that
@@ -194,9 +183,7 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
 }
 
 void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int isPathWithK) {
-  printf("%d ", curr);
   if(curr == p->initial) {
-    printf("\n\n\n");
     return;
   }
 
@@ -212,9 +199,6 @@ void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int 
   int i = 0;
   listIterator it;
   for(it = itrBegin(&(p->path[p->initial][curr])); it != itrEnd(); itrNext(&it)) {
-    if(i++ > 0) {
-      printf("RAMIFICATION ");
-    }
     _GraphPathCounter(p, itrValue(it), isPathWithK);
   }
 }

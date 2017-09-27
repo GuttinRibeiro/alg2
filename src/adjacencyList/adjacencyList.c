@@ -174,23 +174,7 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
 }
 
 void getMatrix(Graph *g, weight **matrix) {
-  matrix = (weight **)malloc((g->numVertex)*sizeof(weight *));
-  if(matrix == NULL) {
-    return;
-  }
-
-  int i;
-  for(i = 0; i < g->numVertex; i++) {
-    matrix[i] = (weight *)malloc((g->numVertex)*sizeof(weight));
-    if(matrix[i] == NULL) {
-      //Removing all positions that was allocated
-      while(--i >= 0) {
-        free(matrix[i]);
-      }
-      free(matrix);
-      return;
-    }
-  }
+  initSquareMatrix(g, g->numVertex);
 
   //O(V+A) => to create a copy of an adjacency list
   block *curr;
