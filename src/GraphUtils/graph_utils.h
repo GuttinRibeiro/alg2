@@ -194,4 +194,7 @@ void GraphCentralBetweenessBC(Graph *g, weight *BCoutput, vertex *central);
  */
  int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central);
 
+//APAGAR
+weight **_FWCreateMatrix(int n);
+void _FWDestroyMatrix(weight **matrix, int n);
 #endif
