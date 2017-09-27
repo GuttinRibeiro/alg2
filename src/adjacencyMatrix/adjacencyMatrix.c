@@ -16,35 +16,19 @@ void printGraph(Graph *g) {
 }
 
 //Graph's functions
-int initSquareMatrix(weight **matrix, int size) {
+void initSquareMatrix(weight **matrix, int size) {
   if(size > MAXNUMVERTEX) {
-    return 0;
-  }
-
-  matrix = (weight **)malloc(size*sizeof(weight *));
-  if(matrix == NULL) {
-    return 0;
+    return;
   }
 
   int i, j;
   for(i = 0; i < size; i++) {
-    matrix[i] = (weight *)malloc(size*sizeof(weight));
-    if(matrix[i] == NULL) {
-      //Removing all positions that was allocated
-      while(--i >= 0) {
-        free(matrix[i]);
-      }
-      free(matrix);
-      return 0;
-    }
-    else {
-      for(j = 0; j < size; j++) {
-        matrix[i][j] = INF;
-      }
+    for(j = 0; j < size; j++) {
+      matrix[i][j] = INF;
     }
   }
 
-  return 1;
+  return;
 }
 
 int initGraph(Graph *g, int numVertex) {
@@ -123,11 +107,8 @@ weight getWeight(Graph *g, vertex u, vertex v) {
 }
 
 void getMatrix(Graph *g, weight **matrix) {
-
   //O(V²) => to create a copy of an adjacency matrix
-  if(!initSquareMatrix(matrix, g->numVertex)) {
-    return;
-  }
+  initSquareMatrix(matrix, g->numVertex);
 
   int i, j;
   for(i = 0; i < g->numVertex; i++) {
