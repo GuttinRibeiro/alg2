@@ -6,14 +6,16 @@
 
 int main () {
   int numCities, numRoads;
-  scanf("%d %d", &numCities, &numRoads);
-  printf("numCities: %d numRoads: %d\n", numCities, numRoads);
 
+  scanf("%d %d", &numCities, &numRoads);
+  printf("Numero de cidades: %d Numero de estradas: %d\n", numCities, numRoads);
+
+  printf("\nDigite o numero de estudantes por cidade: \n");
   int numStudents[numCities];
-  int i, j;
+  int i;
   for(i = 0; i < numCities; i++) {
+    printf("Cidade %d: ", i);
     scanf(" %d", &numStudents[i]);
-    printf("%d\n", numStudents[i]);
   }
   printf("\n");
 
@@ -21,30 +23,36 @@ int main () {
   initGraph(&g, numCities);
   weight aux;
   vertex origin, destination;
+
+  printf("Digite o vertices na ordem [origem] [destino] [peso]:\n");
   for(i = 0; i < numRoads; i++) {
     scanf(" %d %d %f", &origin, &destination, &aux);
     printf("origin: %d destination: %d aux: %f\n", origin, destination, aux);
-    insertDirectedLine(&g, origin, destination, aux);
+    /*VAI SE FUDER AUGUSTO*/
+    if(insertDirectedLine(&g, origin, destination, aux) <= 0) {
+      fprintf(stderr, "Entrada invalida.\n");
+      i--;
+    }
   }
 
   weight **matrixFW = (weight **)newMatrix(numCities, numCities, sizeof(weight));
-  FloydWarshall(&g, matrixFW);
-
-  for(i = 0; i < numCities; i++) {
-    for(j = 0; j < numCities; j++) {
-      matrixFW[i][j] *= numStudents[j];
-      printf("%.2f ", matrixFW[i][j]);
-    }
-    printf("\n");
+  List **path = (List **)newMatrix(numCities, numCities, sizeof(List));
+  if(matrixFW == NULL || path == NULL) {
+    fprintf(stderr, "[Error] Failed to allocate Floyd-Warshall matrix.\n");
+    return -1;
   }
-  printf("\n");
+
+  FloydWarshallPath(&g, matrixFW, path);
 
   vertex central = 1000;
   GraphCentralityFW(&g, matrixFW, &central);
-  printf("%d\n", central);
+
+  vertex betweness = 1000;
+  GraphCentralBetweenessFWP(&g, path, &betweness);
+
+  printf("Saida: %d, %d\n", central, betweness);
 
   deleteMatrix((void **)matrixFW, numCities);
-
-  printGraph(&g);
+  deleteMatrix((void **)path, numCities);
   return 0;
 }
