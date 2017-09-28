@@ -1,11 +1,9 @@
 #ifndef ADJACENCYLIST_H
 #define ADJACENCYLIST_H
 
-#include <float.h>
-
 #define MAXNUMVERTICES 50
-#define INF FLT_MAX
-#define NINF FLT_MIN
+#define INF 100000
+#define NINF -100000
 
 typedef int vertex;
 typedef float weight;

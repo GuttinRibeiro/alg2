@@ -137,7 +137,7 @@ void GraphCentralityEC(Graph *g, weight *ECoutput, vertex *central);
  *              [0]  No error
  * Complexity: O(V³) - worst-case O(V⁴)
  */
-int GraphBetweenessCentrality(Graph *g, weight *output);
+int GraphBetweenessCentrality(Graph *g, float *output);
 
 /* GraphBetweenessCentralityFWP will calculate the
  * betweeness centrality using the output of a

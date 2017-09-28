@@ -5,7 +5,7 @@
  */
 int listInit(List *l) {
   l->first = NULL;
-  l->size++;
+  l->size = 0;
   return 0;
 }
 
@@ -22,7 +22,7 @@ int listPushFront(List *l, elemType elem) {
   newNode->next = l->first;
   l->first = newNode;
 
-  l->size++;
+  l->size = l->size + 1;
   return 0;
 }
 
@@ -47,7 +47,7 @@ int listRemoveByElem(List *l, elemType elem) {
     prev->next = curr->next;
   }
 
-  l->size--;
+  l->size = l->size - 1;
   free(curr);
   return 0;
 }
@@ -86,7 +86,7 @@ int listRemoveByIndex(List *l, unsigned int index) {
     curr->next = rm->next;
   }
 
-  l->size--;
+  l->size = l->size - 1;
   free(rm);
   return 0;
 }
