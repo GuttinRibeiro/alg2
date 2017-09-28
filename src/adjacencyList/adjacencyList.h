@@ -3,7 +3,7 @@
 
 #include <float.h>
 
-#define MAXNUMVERTEX 100
+#define MAXNUMVERTICES 50
 #define INF FLT_MAX
 #define NINF FLT_MIN
 
@@ -17,29 +17,62 @@ typedef struct node {
 } block;
 
 typedef struct {
-  block *list[MAXNUMVERTEX];
+  block *list[MAXNUMVERTICES];
   int numVertex;
 } Graph;
+//The graph considers that the vertex counting start at zero.
 
-//All these functions returns a non positive value when there's something not expected:
-/*
-  -1 : indicates that one of the parameters has a problem
-   0 : indicates that the function hasn't been performed or that it logical value is equal to false
-   1 : indicates that the function has been performed or that it logical value is equal to true
+/* Initializes a graph.
+ * Return: int [-1] if numVertex is bigger than MAXNUMVERTICES
+ *             [1] everything is in order                    */
+int initGraph(Graph *g, int numVertex);
+
+/* Finishes a graph.
+ * Return: int [-1] if the graph is invalid
+ *             [1] everything is in order                    */
+int finishGraph(Graph *g);
+
+/* Checks if there's a line from vertex u to vertex v.
+ * Return: int [-1] one of the parameters is invalid
+ *              [0] there isn't any memory left to create a new block
+ *              [1] everything is correct                    */
+int insertDirectedLine(Graph *g, vertex u, vertex v, weight value);
+
+/* Inserts a directed line from vertex u to vertex v.
+ * Return: int [-1] one of the parameters is invalid
+ *              [0] there isn't a line from vertex u to vertex v
+ *              [1] there is a line from vertex u to vertex v                    */
+int checkDirectedLine(Graph *g, vertex u, vertex v);
+
+/* Removes the directed line from vertex u to vertex v.
+ * Return: int  [0] there isn't a line from vertex u to vertex v
+ *              [1] line removed   */
+int removeDirectedLine(Graph *g, vertex u, vertex v);
+
+/* Checks if there's a connection with vertex u.
+ * Return: int  [-1] vertex u is an invalid vertex
+ *              [0] vertex u hasn't any neighboor
+ *              [1] vertex u has a neighboor                 */
+int checkIfThereIsANeighboor(Graph *g, vertex u);
+
+/* Returns a copy of these representation as an adjacency matrix.
+ * Return: void
 */
-//The graph considers that the vertex counting start at zero
-int initGraph(Graph *g, int numVertex); //Initializes a graph
-int finishGraph(Graph *g); //Finishes a graph
-int insertDirectedLine(Graph *g, vertex u, vertex v, weight value); //Inserts a directed line from vertex u to vertex v
-int checkDirectedLine(Graph *g, vertex u, vertex v); //Checks if there's a line between vertices u and v
-int removeDirectedLine(Graph *g, vertex u, vertex v); // Removes the directed line from vertex u to vertex v
-int checkIfThereIsANeighboor(Graph *g, vertex u); //Checks if there's a connection with vertex u
-void getMatrix(Graph *g, weight **matrix); //Returns a copy of these representation as an adjacency matrix
-vertex getFirstNeighboor(Graph *g, vertex u); //Returns one vertex that is connected with the vertex u
+void getMatrix(Graph *g, weight **matrix);
+
+/* Returns one vertex that is connected with the vertex u.
+ * Return: int  [-1] vertex u doesn't have any neighboor
+ *              [id] the id of first vertex that is a neighboor of vertex u   */
+vertex getFirstNeighboor(Graph *g, vertex u);
+
+/* Returns the value of the line from vertex u to vertex v.
+ * Return: int  [-1] one of the parameters is invalid
+ *              [INF] there isn't a connection from vertex u to vertex v
+ *              [weight] the value of the connection from vertex u to vertex v     */
 weight getWeight(Graph *g, vertex u, vertex v); //Returns the value of the line from vertex u to vertex v
 
 //Utils
-void printGraph(Graph *g); //Shows a representation of a graph
+void printGraph(Graph *g); //Shows a representation of the graph
 void printBlock(block *u); //Shows a representation of a block
 
 #endif

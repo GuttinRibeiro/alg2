@@ -32,7 +32,11 @@ void printBlock(block *u) {
 }
 
 //Graph's functions
-void initSquareMatrix(weight **matrix, int size) {
+
+/* [INTERNAL] Initializes a square matrix size x size
+ * Return: void
+*/
+void _initSquareMatrix(weight **matrix, int size) {
   int i, j;
   for(i = 0; i < size; i++) {
     for(j = 0; j < size; j++) {
@@ -42,7 +46,7 @@ void initSquareMatrix(weight **matrix, int size) {
 }
 
 int initGraph(Graph *g, int numVertex) {
-  if(numVertex > MAXNUMVERTEX) {
+  if(numVertex > MAXNUMVERTICES) {
     return -1;
   }
 
@@ -72,7 +76,10 @@ int finishGraph(Graph *g) {
   return 1;
 }
 
-block* initBlock(vertex u, weight value) {
+/* [INTERNAL] Initializes a block with an id u and a weight value.
+ * Return: [block*]
+*/
+block* _initBlock(vertex u, weight value) {
   block *newBlock = (block *)malloc(sizeof(block));
   if(newBlock == NULL) {
     return NULL;
@@ -88,7 +95,7 @@ int insertDirectedLine(Graph *g, vertex u, vertex v, weight value) {
     return -1;
   }
 
-  block *newV = initBlock(v, value);
+  block *newV = _initBlock(v, value);
   if(newV == NULL) {
     return 0;
   }
@@ -153,7 +160,7 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
 }
 
 void getMatrix(Graph *g, weight **matrix) {
-  initSquareMatrix(matrix, g->numVertex);
+  _initSquareMatrix(matrix, g->numVertex);
 
   //O(V+A) => to create a copy of an adjacency list
   block *curr;
