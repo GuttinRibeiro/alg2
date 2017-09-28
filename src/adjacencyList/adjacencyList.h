@@ -20,7 +20,7 @@ typedef struct {
   block *list[MAXNUMVERTICES];
   int numVertex;
 } Graph;
-//The graph considers that the vertex counting start at zero.
+//These representation considers that the vertex counting start at zero.
 
 /* Initializes a graph.
  * Return: int [-1] if numVertex is bigger than MAXNUMVERTICES
