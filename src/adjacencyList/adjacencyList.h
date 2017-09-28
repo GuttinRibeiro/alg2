@@ -18,7 +18,7 @@ typedef struct {
   block *list[MAXNUMVERTICES];
   int numVertex;
 } Graph;
-//These representation considers that the vertex counting start at zero.
+/*These representation considers that the vertex counting start at zero.*/
 
 /* Initializes a graph.
  * Return: int [-1] if numVertex is bigger than MAXNUMVERTICES
@@ -67,10 +67,10 @@ vertex getFirstNeighboor(Graph *g, vertex u);
  * Return: int  [-1] one of the parameters is invalid
  *              [INF] there isn't a connection from vertex u to vertex v
  *              [weight] the value of the connection from vertex u to vertex v     */
-weight getWeight(Graph *g, vertex u, vertex v); //Returns the value of the line from vertex u to vertex v
+weight getWeight(Graph *g, vertex u, vertex v); /*Returns the value of the line from vertex u to vertex v*/
 
-//Utils
-void printGraph(Graph *g); //Shows a representation of the graph
-void printBlock(block *u); //Shows a representation of a block
+/*Utils*/
+void printGraph(Graph *g); /*Shows a representation of the graph*/
+void printBlock(block *u); /*Shows a representation of a block*/
 
 #endif

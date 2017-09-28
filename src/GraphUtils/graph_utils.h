@@ -193,8 +193,4 @@ void GraphCentralBetweenessBC(Graph *g, weight *BCoutput, vertex *central);
  * Complexity: O(V³) - worst-case O(V⁴)
  */
  int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central);
-
-//APAGAR
-weight **_FWCreateMatrix(int n);
-void _FWDestroyMatrix(weight **matrix, int n);
 #endif

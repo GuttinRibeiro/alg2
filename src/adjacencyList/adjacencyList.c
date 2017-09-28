@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include "adjacencyList.h"
 
-//Utils
 void printGraph(Graph *g) {
   printf("Number of vertex: %d\n", g->numVertex);
   printf("Graph representation: adjacency list\n");
@@ -31,7 +30,7 @@ void printBlock(block *u) {
   }
 }
 
-//Graph's functions
+/*Graph's functions*/
 
 /* [INTERNAL] Initializes a square matrix size x size
  * Return: void
@@ -51,7 +50,8 @@ int initGraph(Graph *g, int numVertex) {
   }
 
   g->numVertex = numVertex;
-  for(int i = 0; i < g->numVertex; i++) {
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
     g->list[i] = NULL;
   }
 
@@ -100,7 +100,7 @@ int insertDirectedLine(Graph *g, vertex u, vertex v, weight value) {
     return 0;
   }
 
-  //Adding a line between u and v
+  /*Adding a line between u and v*/
   block *aux = g->list[u];
   g->list[u] = newV;
   g->list[u]->next = aux;
@@ -136,7 +136,7 @@ int removeDirectedLine(Graph *g, vertex u, vertex v) {
     return 0;
   }
 
-  // if the line that should be removed is the first one
+  /* if the line that should be removed is the first one*/
   if(curr == g->list[u]) {
     g->list[u] = curr->next;
   } else {
@@ -162,7 +162,7 @@ int checkIfThereIsANeighboor(Graph *g, vertex u) {
 void getMatrix(Graph *g, weight **matrix) {
   _initSquareMatrix(matrix, g->numVertex);
 
-  //O(V+A) => to create a copy of an adjacency list
+  /*O(V+A) => to create a copy of an adjacency list*/
   block *curr;
   int i;
   for(i = 0; i < g->numVertex; i++) {

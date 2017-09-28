@@ -5,7 +5,6 @@
  * Basicaly, this function transform the graph
  * into a matrix representation of it
  */
-//-----------------------------------------------------------
 void _FWInit(Graph *g, weight **output) {
   getMatrix(g, output);
 
@@ -18,7 +17,6 @@ void _FWInit(Graph *g, weight **output) {
 /* _FWCreateMatrix is an internal function that
  * creates a matrix nxn.
  */
-//--------------------------------------------------------
 weight **_FWCreateMatrix(int n) {
   weight **matrix = (weight **)malloc(n*sizeof(weight *));
   if(matrix == NULL) {
@@ -74,7 +72,6 @@ List **_FWCreatePathMatrix(int n) {
 /* _FWDestroyMatrix is an internal function that
  * deallocate the matrix created in _FWCreateMatrix
  */
-//-----------------------------------------------------
 void _FWDestroyMatrix(weight **matrix, int n) {
   int i;
   for(i = 0; i < n; i++) {
@@ -99,40 +96,6 @@ void _FWDestroyPathMatrix(List **matrix, int n) {
   free(matrix);
 }
 
-/* _MinWeight is an internal function that
- * returns the minimum weight in a vector
- * and the index of such.
- */
-weight _MinWeight(weight *output, int n, vertex *index) {
-  weight min = INF;
-
-  int i;
-  for(i = 0; i < n; i++) {
-    if(output[i] < min) {
-      min = output[i];
-      *index = i;
-    }
-  }
-
-  return min;
-}
-
-/* _MaxWeight is an internal function that
- * return the maximum weight in a vector.
- */
-weight _MaxWeightColumn(weight **output, vertex column, int n) {
-  weight max = NINF;
-
-  int i;
-  for(i = 0; i < n; i++) {
-    if(output[i][column] > max && output[i][column] <= INF) {
-      max = output[i][column];
-    }
-  }
-
-  return max;
-}
-//---------------------------------------------------------------------
 void FloydWarshall(Graph *g, weight **output) {
   /* Tranform g in a matrix of weights, where
    * the weight to itself is 0
@@ -213,10 +176,8 @@ void FloydWarshallPath(Graph *g, weight **output, List **path) {
  */
 void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int isPathWithK) {
   if(curr == p->initial) {
-    //printf("\n");
     return;
   }
-  //printf("%d ", curr);
 
   if(p->path[p->initial][curr].size > 0) {
     *(p->npath) += p->path[p->initial][curr].size - 1;
@@ -232,12 +193,7 @@ void _GraphPathCounter(struct _PathCounterStructStaticInfo *p, vertex curr, int 
   }
 
   listIterator it;
-  int i = 0;
   for(it = itrBegin(&(p->path[p->initial][curr])); it != itrEnd(); itrNext(&it)) {
-    if(i > 0) {
-      //printf("R%d        ", i);
-    }
-    i++;
     _GraphPathCounter(p, itrValue(it), isPathWithK);
   }
 }
@@ -254,9 +210,17 @@ void GraphPathCounter(List **path, vertex initial, vertex dest, vertex k, int *n
 }
 
 void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output) {
-  int i;
-  for(i = 0; i < g->numVertex; i++) {
-    output[i] = _MaxWeightColumn(FWoutput, i, g->numVertex);
+  int j;
+  for(j = 0; j < g->numVertex; j++) {
+    output[j] = NINF;
+
+    int i;
+    for(i = 0; i < g->numVertex; i++) {
+      if(FWoutput[i][j] > output[j] && FWoutput[i][j] <= INF) {
+        output[j] = FWoutput[i][j];
+      }
+    }
+
   }
 }
 
@@ -284,15 +248,22 @@ int GraphCentralityFW(Graph *g, weight **FWoutput, vertex *central) {
 
   GraphEccentricityFW(g, FWoutput, output);
 
-  _MinWeight(output, g->numVertex, central);
+  GraphCentralityEC(g, output, central);
 
   free(output);
   return 0;
 }
 
-//ME DA UM BOM MOTIVO PRA MANTER ESSA FUNÇÃO QUE NÃO FAZ PORRA NENHUMA E NÃO TEM NOME CLARO
 void GraphCentralityEC(Graph *g, weight *ECoutput, vertex *central) {
-  _MinWeight(ECoutput, g->numVertex, central);
+  weight min = INF;
+
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+    if(ECoutput[i] < min) {
+      min = ECoutput[i];
+      *central = i;
+    }
+  }
 }
 
 int GraphCentrality(Graph *g, vertex *central) {
@@ -332,12 +303,10 @@ void GraphBetweenessCentralityFWP(Graph *g, float *output, List **path) {
         if(path[i][j].size > 0) {
           npath++;
         }
-        //printf("initial: %d, final: %d, k: %d\n", i, j, k);
         GraphPathCounter(path, i, j, k, &npath, &npathWithK);
       }
     }
 
-    //printf("k: %d, npath: %d, withk: %d\n", k, npath, npathWithK);
     if(npath == 0) {
       output[k] = 0;
     } else {
@@ -381,7 +350,7 @@ int GraphCentralBetweeness(Graph *g, vertex *central) {
     return -2;
   }
 
-  _MinWeight(output, g->numVertex, central);
+  GraphCentralBetweenessBC(g, output, central);
 
   free(output);
   return 0;
@@ -389,9 +358,16 @@ int GraphCentralBetweeness(Graph *g, vertex *central) {
 
 }
 
-//ME DA UM BOM MOTIVO PRA MANTER ESSA FUNÇÃO QUE NÃO FAZ PORRA NENHUMA E NÃO TEM NOME CLARO
 void GraphCentralBetweenessBC(Graph *g, weight *BCoutput, vertex *central) {
-  _MinWeight(BCoutput, g->numVertex, central);
+  weight max = NINF;
+
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+    if(BCoutput[i] > max) {
+      max = BCoutput[i];
+      *central = i;
+    }
+  }
 }
 
 int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central) {
@@ -402,6 +378,6 @@ int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central) {
 
   GraphBetweenessCentralityFWP(g, output, path);
 
-  _MinWeight(output, g->numVertex, central);
+  GraphCentralBetweenessBC(g, output, central);
   return 0;
 }
