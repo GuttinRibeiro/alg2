@@ -60,7 +60,7 @@ int main () {
   vertex betweness = 1000;
   GraphCentralBetweenessFWP(&g, path, &betweness);
 
-  printf("Saida: %d, %d\n", central, betweness);
+  printf("Saida:\n%d %d\n", central, betweness);
 
   deleteMatrix((void **)matrixFW, numCities);
   deleteMatrix((void **)path, numCities);
