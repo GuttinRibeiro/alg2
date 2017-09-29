@@ -7,8 +7,11 @@
 int main () {
   int numCities, numRoads;
 
-  scanf("%d %d", &numCities, &numRoads);
-  printf("Numero de cidades: %d Numero de estradas: %d\n", numCities, numRoads);
+  printf("Numero de cidades: ");
+  scanf(" %d", &numCities);
+
+  printf("Numero de estradas: ");
+  scanf(" %d", &numRoads);
 
   printf("\nDigite o numero de estudantes por cidade: \n");
   int numStudents[numCities];
@@ -28,7 +31,7 @@ int main () {
   for(i = 0; i < numRoads; i++) {
     scanf(" %d %d %f", &origin, &destination, &aux);
     printf("origin: %d destination: %d aux: %f\n", origin, destination, aux);
-    /*VAI SE FUDER AUGUSTO*/
+
     if(insertDirectedLine(&g, origin, destination, aux) <= 0) {
       fprintf(stderr, "Entrada invalida.\n");
       i--;
@@ -38,11 +41,18 @@ int main () {
   weight **matrixFW = (weight **)newMatrix(numCities, numCities, sizeof(weight));
   List **path = (List **)newMatrix(numCities, numCities, sizeof(List));
   if(matrixFW == NULL || path == NULL) {
-    fprintf(stderr, "[Error] Failed to allocate Floyd-Warshall matrix.\n");
+    fprintf(stderr, "[Error] Erro ao alocar matriz auxiliar.\n");
     return -1;
   }
 
   FloydWarshallPath(&g, matrixFW, path);
+
+  for(i = 0; i < g.numVertex; i++) {
+    int j;
+    for(j = 0; j < g.numVertex; j++) {
+      matrixFW[i][j] = numStudents[i];
+    }
+  }
 
   vertex central = 1000;
   GraphCentralityFW(&g, matrixFW, &central);
@@ -54,5 +64,8 @@ int main () {
 
   deleteMatrix((void **)matrixFW, numCities);
   deleteMatrix((void **)path, numCities);
+
+  finishGraph(&g);
+
   return 0;
 }

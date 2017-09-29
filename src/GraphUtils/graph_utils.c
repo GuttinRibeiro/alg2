@@ -14,88 +14,6 @@ void _FWInit(Graph *g, weight **output) {
   }
 }
 
-/* _FWCreateMatrix is an internal function that
- * creates a matrix nxn.
- */
-weight **_FWCreateMatrix(int n) {
-  weight **matrix = (weight **)malloc(n*sizeof(weight *));
-  if(matrix == NULL) {
-    return NULL;
-  }
-
-  int i;
-  for(i = 0; i < n; i++) {
-    matrix[i] = (weight *)malloc(n*sizeof(weight));
-    if(matrix[i] == NULL) {
-      while(--i >= 0) {
-        free(matrix[i]);
-      }
-      free(matrix);
-
-      return NULL;
-    }
-  }
-
-  return matrix;
-}
-
-/* _FWCreatePathMatrix is an internal function
- * that creates a matrix nxn of List
- */
-List **_FWCreatePathMatrix(int n) {
-  List **matrix = (List **)malloc(n*sizeof(List *));
-  if(matrix == NULL) {
-    return NULL;
-  }
-
-  int i;
-  for(i = 0; i < n; i++) {
-    matrix[i] = (List *)malloc(n*sizeof(List));
-    if(matrix[i] == NULL) {
-      while(--i >= 0) {
-        free(matrix[i]);
-      }
-      free(matrix);
-
-      return NULL;
-    }
-
-    int j;
-    for(j = 0; j < n; j++) {
-      listInit(&(matrix[i][j]));
-    }
-  }
-
-  return matrix;
-}
-
-/* _FWDestroyMatrix is an internal function that
- * deallocate the matrix created in _FWCreateMatrix
- */
-void _FWDestroyMatrix(weight **matrix, int n) {
-  int i;
-  for(i = 0; i < n; i++) {
-    free(matrix[i]);
-  }
-  free(matrix);
-}
-
-/* _FWDestroyPathMatrix is an internal function
- * that deallocate the matrix created in _FWCreatePathMatrix
- */
-void _FWDestroyPathMatrix(List **matrix, int n) {
-  int i;
-  for(i = 0; i < n; i++) {
-    int j;
-    for(j = 0; j < n; j++) {
-      listClean(&(matrix[i][j]));
-    }
-
-    free(matrix[i]);
-  }
-  free(matrix);
-}
-
 void FloydWarshall(Graph *g, weight **output) {
   /* Tranform g in a matrix of weights, where
    * the weight to itself is 0
@@ -118,26 +36,19 @@ void FloydWarshall(Graph *g, weight **output) {
   }
 }
 
-/* _FWPInit initiates the output and path matrix
- * to be used in FloydeWarshallPath
- */
-void _FWPInit(Graph *g, weight **output, List **path) {
-  _FWInit(g, output);
-
-  int i;
-  for(i = 0; i < g->numVertex; i++) {
-    int j;
-    for(j = 0; j < g->numVertex; j++) {
-      listInit(&(path[i][j]));
-    }
-  }
-}
-
 void FloydWarshallPath(Graph *g, weight **output, List **path) {
   /* Tranform g in a matrix of weights, where
    * the weight to itself is 0
    */
-   _FWPInit(g, output, path);
+  _FWInit(g, output);
+
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+   int j;
+   for(j = 0; j < g->numVertex; j++) {
+     listInit(&(path[i][j]));
+   }
+  }
 
   int k;
   for(k = 0; k < g->numVertex; k++) {
@@ -225,18 +136,16 @@ void GraphEccentricityFW(Graph *g, weight **FWoutput, weight *output) {
 }
 
 int GraphEccentricity(Graph *g, weight *output) {
-  weight **fwoutput = _FWCreateMatrix(g->numVertex);
+  weight **fwoutput = (weight **)newMatrix(g->numVertex, g->numVertex, sizeof(weight));
 
   if(fwoutput == NULL) {
     return -1;
   }
 
   FloydWarshall(g, fwoutput);
-
   GraphEccentricityFW(g, fwoutput, output);
 
-  _FWDestroyMatrix(fwoutput, g->numVertex);
-
+  deleteMatrix((void **)fwoutput, g->numVertex);
   return 0;
 }
 
@@ -247,7 +156,6 @@ int GraphCentralityFW(Graph *g, weight **FWoutput, vertex *central) {
   }
 
   GraphEccentricityFW(g, FWoutput, output);
-
   GraphCentralityEC(g, output, central);
 
   free(output);
@@ -316,25 +224,39 @@ void GraphBetweenessCentralityFWP(Graph *g, float *output, List **path) {
 }
 
 int GraphBetweenessCentrality(Graph *g, weight *output) {
-  weight **fwoutput = _FWCreateMatrix(g->numVertex);
+  weight **fwoutput = (weight **)newMatrix(g->numVertex, g->numVertex, sizeof(weight));
 
   if(fwoutput == NULL) {
     return -1;
   }
 
-  List **path = (List **)_FWCreatePathMatrix(g->numVertex);
+  List **path = (List **)newMatrix(g->numVertex, g->numVertex, sizeof(List));
 
   if(path == NULL) {
-    _FWDestroyMatrix(fwoutput, g->numVertex);
+    deleteMatrix((void **)fwoutput, g->numVertex);
     return -1;
   }
 
-  FloydWarshallPath(g, fwoutput, path);
+  int i;
+  for(i = 0; i < g->numVertex; i++) {
+    int j;
+    for(j = 0; j < g->numVertex; j++) {
+      listInit(&(path[i][j]));
+    }
+  }
 
+  FloydWarshallPath(g, fwoutput, path);
   GraphBetweenessCentralityFWP(g, output, path);
 
-  _FWDestroyMatrix(fwoutput, g->numVertex);
-  _FWDestroyPathMatrix(path, g->numVertex);
+  deleteMatrix((void **)fwoutput, g->numVertex);
+
+  for(i = 0; i < g->numVertex; i++) {
+    int j;
+    for(j = 0; j < g->numVertex; j++) {
+      listClean(&(path[i][j]));
+    }
+  }
+  deleteMatrix((void **)path, g->numVertex);
 
   return 0;
 }
@@ -377,7 +299,8 @@ int GraphCentralBetweenessFWP(Graph *g, List **path, vertex *central) {
   }
 
   GraphBetweenessCentralityFWP(g, output, path);
-
   GraphCentralBetweenessBC(g, output, central);
+
+  free(output);
   return 0;
 }

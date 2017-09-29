@@ -3,8 +3,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include "../Utils/utils.h"
 #include "../List/list.h"
-
 #include "../adjacencyList/adjacencyList.h"
 
 #ifndef INF
