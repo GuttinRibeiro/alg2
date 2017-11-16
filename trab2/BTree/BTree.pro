@@ -4,10 +4,10 @@ CONFIG -= app_bundle
 CONFIG -= qt
 
 SOURCES += \
-    btree.cc \
-    datahandle.cc \
-    main.cc
+    main.cc \
+    src/btree.cc \
+    src/datahandle.cc
 
 HEADERS += \
-    btree.hh \
-    datahandle.hh
+    src/btree.hh \
+    src/datahandle.hh
