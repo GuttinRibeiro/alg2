@@ -9,8 +9,8 @@ private:
 public:
     DataHandle(char *dataPath);
 
-    virtual int getNextData() = 0;
-    virtual std::string operator[](std::size_t idx) = 0;
+    virtual int getNextRegister() = 0;
+    virtual std::string getRegisterByOffset(int offset) = 0;
 
     /*Retorna o tamanho de um registro*/
     virtual int registerSize() = 0;
@@ -18,6 +18,10 @@ public:
     virtual int registerNumber() = 0;
 
     virtual int createIndexFile() = 0;
+
+    virtual int addRegister() = 0;
+
+    virtual int removeRegister() = 0;
 };
 
 #endif // FILETEMPLATE_H
