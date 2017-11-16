@@ -3,12 +3,11 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 CONFIG -= qt
 
-SOURCES += main.cpp \
+SOURCES += \
     btree.cc \
-    filetemplate.cc \
-    filestruct.cc
+    datahandle.cc \
+    main.cc
 
 HEADERS += \
     btree.hh \
-    filetemplate.hh \
-    filestruct.hh
+    datahandle.hh

@@ -1,6 +1,6 @@
 #include "btree.hh"
 
-BTree::BTree(unsigned int order, FileTemplate &fileTemplate) : _fileTemplate(fileTemplate) {
-    _order = order;
+template <class T>
+BTree<T>::BTree(DataHandle &fileTemplate) : _fileTemplate(fileTemplate) {
 }
 
