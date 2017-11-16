@@ -12,9 +12,9 @@ public:
     virtual int getNextData() = 0;
     virtual std::string operator[](std::size_t idx) = 0;
 
-    /* number of elements in a register */
+    /*Retorna o tamanho de um registro*/
     virtual int registerSize() = 0;
-    /* number of registers in a file */
+    /* Retorna o número de registro no arquivo de índices*/
     virtual int registerNumber() = 0;
 
     virtual int createIndexFile() = 0;
