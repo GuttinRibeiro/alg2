@@ -2,20 +2,16 @@
 #define DATASTRUCT_H
 
 #include "datahandle.hh"
+#include "registerhandle.hh"
 #include <iostream>
+#include <fstream>
 
 class DataParser : public DataHandle {
-private:
-    struct Register {
-
-    };
-
-    Register _reg;
 public:
-    DataParser(char *path);
+    DataParser(const char *path, RegisterHandle *registerHandle);
 
     int getNextRegister();
-    std::string getRegisterByOffset(int offset);
+    RegisterHandle &getRegisterByOffset(int offset);
 
     int registerNumber();
     int createIndexFile();

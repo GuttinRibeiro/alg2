@@ -3,14 +3,19 @@
 
 #include <iostream>
 
+#include "registerhandle.hh"
+
 class DataHandle {
-private:
-    char *_dataPath;
+protected:
+    const char *_dataPath;
+    RegisterHandle *_registerHandle;
+
+    std::string _register;
 public:
-    DataHandle(char *dataPath);
+    DataHandle(const char *dataPath, RegisterHandle *registerHandle);
 
     virtual int getNextRegister() = 0;
-    virtual std::string getRegisterByOffset(int offset) = 0;
+    virtual RegisterHandle &getRegisterByOffset(int offset) = 0;
 
     /* number of registers in a file */
     virtual int registerNumber() = 0;

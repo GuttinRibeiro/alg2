@@ -1,5 +1,6 @@
 #include "datahandle.hh"
 
-DataHandle::DataHandle(char *dataPath) {
+DataHandle::DataHandle(const char *dataPath, RegisterHandle *registerHandle) {
     _dataPath = dataPath;
+    _registerHandle = registerHandle;
 }
