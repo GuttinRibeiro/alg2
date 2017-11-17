@@ -17,7 +17,9 @@ public:
     virtual int getNextRegister() = 0;
     virtual RegisterHandle &getRegisterByOffset(int offset) = 0;
 
-    /* number of registers in a file */
+    /*Retorna o tamanho de um registro*/
+    virtual int registerSize() = 0;
+    /* Retorna o número de registro no arquivo de índices*/
     virtual int registerNumber() = 0;
 
     virtual int createIndexFile() = 0;

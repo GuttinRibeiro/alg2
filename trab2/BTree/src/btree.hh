@@ -17,7 +17,7 @@ private:
         int keysNumber;
         node keys[BTREE_ORDER - 1];
         int childs[BTREE_ORDER];
-        bool isLeaf;
+        bool isALeaf;
     };
 
     DataHandle &_fileTemplate;
