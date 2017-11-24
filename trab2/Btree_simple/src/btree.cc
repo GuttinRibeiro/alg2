@@ -1,23 +1,158 @@
 #include "btree.hh"
 
+constexpr char BTree::Header::headerMsg[];
+
 BTree::BTree(const char *indexFile) {
     _indexFile = indexFile;
+    _isFileOpened = 0;
+    _isHeaderUpdated = false;
+
+    _header.RRNCounter = 0;
+    _header.rootRRN = -1;
+
+    // test file
+    if(openIndexFile()) {
+        // test if the file is empty
+        if(_indexStream.peek() == ifstream::traits_type::eof()) {
+            cerr << "[Warning] BTree receive an empty file. Overwriting.\n";
+
+            // test if we can write on the file
+            if(!(_indexStream.write(Header::headerMsg, 2) )) {
+                cerr << "[Error] BTree couldn't write on file.\n";
+                abort();
+            }
+
+            // write default header
+            writeHeader();
+        } else {
+            // file isn't empty
+
+            // test if we can read the file
+            char headerMsg[2];
+            if( !(_indexStream.read(headerMsg, 2)) ) {
+                cerr << "[Error] BTree couldn't read the file.\n";
+                abort();
+            }
+
+            // test if we can write on the file
+            _indexStream.seekp(0);
+            if(!(_indexStream.write(headerMsg, 2) )) {
+                cerr << "[Error] BTree couldn't write on file.\n";
+                abort();
+            }
+
+            // test if the file was created by us
+            if(strncmp(headerMsg, Header::headerMsg, 2) == 0) {
+                readHeader();
+            } else {
+                cerr << "[Warning] BTree receive an corrupted file.\n";
+            }
+        }
+
+    } else { // file dosn't exist
+        cerr << "[Warning] BTree coudn't open index file, creating a new one at \"" << indexFile << "\".\n";
+        _indexStream.open(_indexFile, fstream::out // open as write
+                                    | fstream::binary); // set as a binary file
+
+        // test if we can write on the file
+        if(!(_indexStream.write(Header::headerMsg, 2) )) {
+            cerr << "[Error] BTree couldn't write on file.\n";
+            abort();
+        }
+
+        // write default header
+        writeHeader();
+    }
+
+    closeIndexFile();
+
+    // create buffer
+    _keyBuffer = new char[KEY_SIZE];
+    _key = new Key;
+    _nodeBuffer = new char[NODE_SIZE];
+    _node = new Node;
+
+    // TODO: handle null
 }
 
 BTree::~BTree() {
     if(_indexStream.is_open()) {
         _indexStream.close();
     }
+
+    // delete buffers
+    delete _keyBuffer;
+    delete _key;
+    delete _nodeBuffer;
+    delete _node;
+}
+
+void BTree::setRootRRN(rrn_t rrn) {
+    _header.rootRRN = rrn;
+    _isHeaderUpdated = false;
+}
+
+rrn_t BTree::bindAvailableRRN() {
+    _isHeaderUpdated = false;
+
+    return (_header.RRNCounter)++;
+}
+
+rrn_t BTree::rootRRN() {
+    return _header.rootRRN;
+}
+
+rrn_t BTree::RRNCounter() {
+    return _header.RRNCounter;
+}
+
+void BTree::writeHeader() {
+    openIndexFile();
+
+    _indexStream.seekp(2);
+    _indexStream.write((char *)&(_header.RRNCounter), sizeof(_header.RRNCounter));
+    _indexStream.write((char *)&(_header.rootRRN), sizeof(_header.rootRRN));
+
+    closeIndexFile();
+
+    _isHeaderUpdated = true;
+}
+
+void BTree::readHeader() {
+    openIndexFile();
+
+    _indexStream.seekg(2);
+    _indexStream.read((char *)&(_header.RRNCounter), sizeof(_header.RRNCounter));
+    _indexStream.read((char *)&(_header.rootRRN), sizeof(_header.rootRRN));
+
+    closeIndexFile();
+
+    _isHeaderUpdated = true;
 }
 
 bool BTree::openIndexFile() {
+    // handles the oppening if the file is aready open
     if(_indexStream.is_open() == false) {
-        _indexStream.open(_indexFile, ios::out // open as write
-                                    | ios::in  // and read file
-                                    | ios::binary); // set as a binary file
+        _indexStream.open(_indexFile, fstream::out // open as write
+                                    | fstream::in  // and read file
+                                    | fstream::binary); // set as a binary file
+
+        _isFileOpened = 1;
+    } else {
+        _isFileOpened++;
     }
 
     return _indexStream.is_open();
+}
+
+void BTree::closeIndexFile() {
+    // close the file only if the function is the one
+    // that open it
+    if(_isFileOpened == 1) {
+        _indexStream.close();
+    }
+
+    _isFileOpened--;
 }
 
 /* link */
@@ -38,7 +173,7 @@ void BTree::flushKeyBuffer() {
     memset(_keyBuffer, 0, KEY_SIZE); // clean _keyBuffer
 }
 
-const char *BTree::keyParser(key_t &key) {
+const char *BTree::keyParser(Key &key) {
     // key is like [value][offset]
     // copy value
     memcpy( _keyBuffer, &(key.value), sizeof(key.value) );
@@ -49,18 +184,18 @@ const char *BTree::keyParser(key_t &key) {
     return _keyBuffer;
 }
 
-BTree::key_t &BTree::keyParser(const char *key) {
+BTree::Key &BTree::keyParser(const char *key) {
     // key is like [value][offset]
     // copy value
-    memcpy( &(_key.value), key, sizeof(_key.value) );
+    memcpy( &(_key->value), key, sizeof(_key->value) );
 
     // copy offset
-    memcpy( &(_key.offset), &(key[sizeof(_key.value)]), sizeof(_key.offset) );
+    memcpy( &(_key->offset), &(key[sizeof(_key->value)]), sizeof(_key->offset) );
 
-    return _key;
+    return *_key;
 }
 
-size_t BTree::keyParser(char *dest, key_t &key) {
+size_t BTree::keyParser(char *dest, Key &key) {
     // key is like [value][offset]
     // copy value
     memcpy( dest, &(key.value), sizeof(key.value) );
@@ -71,41 +206,21 @@ size_t BTree::keyParser(char *dest, key_t &key) {
     return (sizeof(key));
 }
 
-size_t BTree::keyParser(key_t &dest, const char *src) {
+size_t BTree::keyParser(Key &dest, const char *src) {
     dest = keyParser(src);
 
     return (sizeof(dest));
 }
 
 /* node */
-offset_t BTree::nodeOffset(rrn_t rrn) {
+offset_t BTree::toNodeOffset(rrn_t rrn) {
     // convert rrn to offset
-    // offset = rrn * sizeof(node) + sizeof(rootNode)
-    return rrn*NODE_SIZE + sizeof(rrn);
+    // offset = rrn * sizeof(node) + sizeof(header) + 2
+    return rrn*NODE_SIZE + sizeof(Header) + 2;
 }
 
-rrn_t BTree::getRootRRNFromFile() {
-    if( _indexStream.is_open() ) {
-        _indexStream.seekg(0);
-
-        rrn_t rootRRN = INVALID_RRN;
-        _indexStream.read((char*)&rootRRN, sizeof(rootRRN));
-
-        return rootRRN;
-    } else {
-        cout << "[Warning] BTree::getRootRRNFromFile() receive a call with a close file.\n";
-        return INVALID_RRN;
-    }
-}
-
-void BTree::setRootRRNOnFile(rrn_t rootRRN) {
-    if( _indexStream.is_open() ) {
-        _indexStream.seekg(0);
-
-        _indexStream.write((char*)&rootRRN, sizeof(rootRRN));
-    } else {
-        cout << "[Warning] BTree::setRootRRNOnFile() receive a call with a close file.\n";
-    }
+rrn_t BTree::toNodeRRN(offset_t offset) {
+    return (offset - sizeof(Header) - 2)/NODE_SIZE;
 }
 
 void BTree::flushNodeBuffer() {
@@ -123,21 +238,23 @@ const char *BTree::readNode() {
     }
 }
 
-void BTree::writeNode(node_t &node) {
+void BTree::writeNode(Node &node) {
     if( _indexStream.is_open() ) {
-        _indexStream.seekp(0, _indexStream.end);
-
         _indexStream.write(nodeParser(node), sizeof(node));
     } else {
         cout << "[Warning] BTree::writeNode() receive a call with a close file.\n";
     }
 }
 
-BTree::node_t &BTree::getNodeFromFile() {
+BTree::Node &BTree::loadNode() {
     return nodeParser(readNode());
 }
 
-const char *BTree::nodeParser(node_t &node) {
+void BTree::getNode(Node &dest) {
+    decodeNodeTo(dest, readNode());
+}
+
+const char *BTree::nodeParser(Node &node) {
     // the node is kept like [length][link][key][link][key]...[link]
 
     if(node.keyNumber >= ORDER) {
@@ -163,39 +280,43 @@ const char *BTree::nodeParser(node_t &node) {
     }
 
     // copy last link
-    linkParser( &(_nodeBuffer[bufferPointer]), node.links[node.keyNumber] );
+    linkParser( &(_nodeBuffer[bufferPointer]), node.links[BTREE_KEY_NUMBER] );
 
     return _nodeBuffer;
 }
 
-BTree::node_t &BTree::nodeParser(const char *node) {
+BTree::Node &BTree::nodeParser(const char *node) {
+    decodeNodeTo(*_node, node);
+
+    return *_node;
+}
+
+void BTree::decodeNodeTo(Node &dest, const char *src) {
     // the node is kept like [length][link][key][link][key]...[link]
     bufferptr_t bufferPointer = 0;
 
     // read length
-    memcpy( &(_node.keyNumber), node, sizeof(_node.keyNumber) );
-    bufferPointer += sizeof(_node.keyNumber);
+    memcpy( &(dest.keyNumber), src, sizeof(dest.keyNumber) );
+    bufferPointer += sizeof(_node->keyNumber);
 
-    if(_node.keyNumber >= ORDER) {
-        std::cout << "[Warning] BTree::nodeParser(const char *node) receive a corrupted or invalid node.\n";
-        _node.keyNumber = BTREE_INVALID_KEY_NUMBER;
-        return _node;
+    if(dest.keyNumber >= ORDER) {
+        std::cout << "[Warning] BTree::decodeNodeTo receive a corrupted or invalid source.\n";
+        dest.keyNumber = BTREE_INVALID_KEY_NUMBER;
     }
 
     // there are BTREE_KEY_NUMBER segments like [link][key]
+    // (even if the node isn't full)
     int i;
     for(i = 0; i < BTREE_KEY_NUMBER; i++) {
         // copy link i
-        bufferPointer += linkParser(_node.links[i], &(node[bufferPointer]));
+        bufferPointer += linkParser(dest.links[i], &(src[bufferPointer]));
 
         // copy key i
-        bufferPointer += keyParser(_node.keys[i], &(node[bufferPointer]));
+        bufferPointer += keyParser(dest.keys[i], &(src[bufferPointer]));
     }
 
     // copy last link
-    bufferPointer += linkParser(_node.links[_node.keyNumber], &(node[bufferPointer]));
-
-    return _node;
+    linkParser(dest.links[BTREE_KEY_NUMBER], &(src[bufferPointer]));
 }
 
 int BTree::insert(int id, offset_t offset) {
@@ -205,13 +326,11 @@ int BTree::insert(int id, offset_t offset) {
 
     if(dataOffset == INVALID_OFFSET) { // everything look fine
         // create the new key
-        key_t key;
-        key.value = id;
-        key.offset = offset;
+        Key *key = new Key;
+        key->value = id;
+        key->offset = offset;
         // and the right link that will go with it
-        rrn_t *rightLink = NULL;
-        // and the root rrn in case that we have to update it
-        rrn_t *rootRRN = NULL;
+        rrn_t rightLink = INVALID_RRN;
 
         bool updateNode = true;
 
@@ -221,7 +340,7 @@ int BTree::insert(int id, offset_t offset) {
 
             // search where to put it
             int i = 0;
-            while( i < nodeInfo->node.keyNumber && key.value > nodeInfo->node.keys[i].value ) {
+            while( i < nodeInfo->node.keyNumber && key->value > nodeInfo->node.keys[i].value ) {
                 i++;
             }
 
@@ -234,8 +353,11 @@ int BTree::insert(int id, offset_t offset) {
                     nodeInfo->node.links[j+1] = nodeInfo->node.links[j];
                     j--;
                 }
-                nodeInfo->node.keys[i] = key;
-                nodeInfo->node.links[i+1] = (rightLink == NULL)? INVALID_RRN : *rightLink;
+                nodeInfo->node.keys[i] = *key;
+
+                nodeInfo->node.links[i+1] = rightLink;
+
+                (nodeInfo->node.keyNumber)++;
 
                 updateNode = false; // there no need to keep updating the nodes...
             } else { // split
@@ -250,16 +372,19 @@ int BTree::insert(int id, offset_t offset) {
                     return -2;
                 }
 
-                _updateNodes.push_front(newNode); // check the newNode to be added to the index file
+                newNode->node.keyNumber = 0;
+
+                _updateNodes.push_back(newNode); // check the newNode to be added to the index file
 
                 // copy half of the current node to the new node
-                int i;
-                for(i = (ORDER/2)+1; i < BTREE_KEY_NUMBER; i++) {
-                    // copy the link and key
-                    newNode->node.links[i - ((ORDER/2)+1)] = nodeInfo->node.links[i];
-                    newNode->node.keys[i - ((ORDER/2)+1)] = nodeInfo->node.keys[i];
 
-                    // cleans the link
+                int i;
+                for(i = BTREE_SPLIT_INDEX; i < BTREE_KEY_NUMBER; i++) {
+                    // copy the link and key
+                    newNode->node.links[i - BTREE_SPLIT_INDEX] = nodeInfo->node.links[i];
+                    newNode->node.keys[i - BTREE_SPLIT_INDEX] = nodeInfo->node.keys[i];
+
+                    // clean the link
                     nodeInfo->node.links[i] = INVALID_RRN;
 
                     // update number of keys
@@ -267,16 +392,26 @@ int BTree::insert(int id, offset_t offset) {
                     (newNode->node.keyNumber)++;
                 }
 
-                //copy the last link
-                newNode->node.links[i - ((ORDER/2)+1)] = nodeInfo->node.links[i];
+                // copy the last key
+                newNode->node.links[i - BTREE_SPLIT_INDEX] = nodeInfo->node.links[i];
+                // clean the link
+                nodeInfo->node.links[i] = INVALID_RRN;
 
-                key = nodeInfo->node.keys[(ORDER/2)];
-                rightLink = &(newNode->rrn); // this will altocorrect when we update the rrn from the new node
-                                             // a small problem comes when we have to think about the call of delete
+                // clean the rest of the links of newNode;
+                for(i = i - BTREE_SPLIT_INDEX+1; i < ORDER; i++) {
+                    newNode->node.links[i] = INVALID_RRN;
+                }
+
+                *key = nodeInfo->node.keys[BTREE_SPLIT_INDEX - 1];
+                (nodeInfo->node.keyNumber)--;
+
+                newNode->rrn = bindAvailableRRN();
+                rightLink = newNode->rrn;
+
                 updateNode = true;
             }
 
-            _updateNodes.push_front(nodeInfo);
+            _updateNodes.push_back(nodeInfo);
         }
 
         if(updateNode) {
@@ -290,26 +425,27 @@ int BTree::insert(int id, offset_t offset) {
                 return -2;
             }
 
-            _updateNodes.push_front(newNode); // check the newNode to be added to the index file
-
-            rootRRN = &(newNode->rrn);
+            _updateNodes.push_back(newNode); // check the newNode to be added to the index file
 
             newNode->node.keyNumber = 1;
-            newNode->node.keys[0] = key;
+            newNode->node.keys[0] = *key;
 
-            if(nodeInfo == NULL) {
+            if(nodeInfo == NULL) { // first node
                 newNode->node.links[0] = INVALID_RRN;
             } else {
                 newNode->node.links[0] = nodeInfo->rrn;
             }
 
-            if(rightLink == NULL) {
-                newNode->node.links[1] = INVALID_RRN;
-            } else {
-                newNode->node.links[1] = *rightLink;
+            newNode->node.links[1] = rightLink;
+
+            int i;
+            for(i = 2; i < ORDER; i++) {
+                newNode->node.links[i] = INVALID_RRN;
             }
 
-            newNode->rrn = INVALID_OFFSET;
+            newNode->rrn = bindAvailableRRN();
+
+            setRootRRN(newNode->rrn);
         }
 
         _history.deleteAll();
@@ -321,31 +457,25 @@ int BTree::insert(int id, offset_t offset) {
             return -1;
         }
 
+        if(_isHeaderUpdated == false) {
+            writeHeader();
+        }
+
         while(_updateNodes.isEmpty() == false) {
-            nodeInfo_t *nodeInfo = _updateNodes.first();
+            nodeInfo_t *nodeInfo = _updateNodes.takeFirst();
 
             if(nodeInfo->rrn == INVALID_RRN) {
                 // set the pointer on the end of file
                 _indexStream.seekp(0, _indexStream.end);
                 // update the rrn, this will be used in case of split
-                if(_indexStream.tellp() < sizeof(*rootRRN)) { // file is empty;
-
-                    _indexStream.seekp(0);
-
-                    if(rootRRN != NULL) {
-                        _indexStream.write((char *)rootRRN, sizeof(*rootRRN)); // rewrite root
-                    } else {
-                        rrn_t rrn = 0;
-                        _indexStream << rrn;
-                    }
-
-                    rootRRN = NULL;
+                if(_indexStream.tellp() < sizeof(rrn_t)) { // file is empty;
+                    setRootRRN(0);
                 }
 
-                nodeInfo->rrn = _indexStream.tellp()/NODE_SIZE;
+                nodeInfo->rrn = toNodeRRN(_indexStream.tellp());
             } else {
                 // set the pointer on the index
-                _indexStream.seekp(nodeInfo->rrn*NODE_SIZE);
+                _indexStream.seekp(toNodeOffset(nodeInfo->rrn));
 
             }
 
@@ -354,13 +484,9 @@ int BTree::insert(int id, offset_t offset) {
 
             // set as unused
             _history.push_front(nodeInfo);
-            _updateNodes.pop_front();
         }
 
-        if(rootRRN != NULL) {
-            _indexStream.seekp(0);
-            _indexStream.write((char *)rootRRN, sizeof(*rootRRN)); // rewrite root
-        }
+        delete key;
 
     } else { // it seen that our key aready exists
         std::cout << "[Warning] BTree::insert receive an existing key.\n";
@@ -368,6 +494,7 @@ int BTree::insert(int id, offset_t offset) {
 
     // delete everything
     _history.deleteAll();
+    _updateNodes.deleteAll();
 
     _indexStream.close();
 
@@ -385,39 +512,42 @@ offset_t BTree::search(int key, bool makeHistory) {
     offset_t result = INVALID_OFFSET;
     if(openIndexFile()) { // test if the file was openned sucessfuly
 
-        rrn_t rootRRN = INVALID_RRN;
-        rootRRN = getRootRRNFromFile();
+        rrn_t currRRN = INVALID_RRN;
+        currRRN = rootRRN();
 
         bool found = false;
 
-        while((found == false || rootRRN != INVALID_RRN) && _indexStream.eof() == false) {
-            _indexStream.seekg(nodeOffset(rootRRN)); // seek the node
+        while(found == false && currRRN != INVALID_RRN) {
+            _indexStream.seekg(toNodeOffset(currRRN)); // seek the current node
 
-            node_t &node = getNodeFromFile(); // read the node
+            Node *node = NULL; // I wish that we could do with reference....
 
             if(makeHistory) {
                 nodeInfo_t *nodeInfo = new nodeInfo_t; // this solve the problem if the node is too big
-                nodeInfo->node = node; // welll, this has to be a copy, because its a reference to _node
-                nodeInfo->rrn = rootRRN;
+                getNode(nodeInfo->node); // put the node into nodeInfo->node
+                node = &(nodeInfo->node); // we can do this because we won't delete this nodeInfo until the end
+                nodeInfo->rrn = currRRN;
 
-                _history.push_front(nodeInfo); // add to _hystory
+                _history.push_front(nodeInfo); // add to _history
+            } else {
+                node = &loadNode(); // we can do this because the function return a reference to _node
             }
 
-            int i;
-            for(i = 0; i < node.keyNumber; i++) {
-                if(node.keys[i].value == key) {
+            // search key inside node
+            int i = 0;
+            while(i < node->keyNumber && key >= node->keys[i].value) {
+                if(node->keys[i].value == key) {
                     found = true;
-                    result = node.keys[i].offset;
-                } else {
-                    if(key < node.keys[i].value) {
-                        rootRRN = node.links[i];
-                    }
+                    result = node->keys[i].offset;
                 }
+                i++;
             }
 
-            // test if key is greater than the last key of node
-            if(key > node.keys[node.keyNumber].value) {
-                rootRRN = node.links[node.keyNumber];
+            // go down into the tree
+            if(node->keyNumber > 0) {
+                currRRN = node->links[i];
+            } else {
+                currRRN = INVALID_RRN;
             }
         }
     } else {
@@ -425,7 +555,7 @@ offset_t BTree::search(int key, bool makeHistory) {
         return INVALID_OFFSET;
     }
 
-    _indexStream.close();
+    closeIndexFile();
 
     return result;
 }

@@ -1,7 +1,7 @@
 #ifndef REGISTERPARSER_HH
 #define REGISTERPARSER_HH
 
-#include "commonheader.h"
+#include "sharedheader.h"
 
 using namespace std;
 

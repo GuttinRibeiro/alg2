@@ -13,4 +13,4 @@ HEADERS += \
     src/list.hh \
     src/registerparser.hh \
     src/dataparser.hh \
-    src/commonheader.h
+    src/sharedheader.h

@@ -15,9 +15,9 @@
 // the size of struct + delimiters
 #define BUFFER_SIZE (sizeof(Register_t) + 4)
 // size of the struct
-#define NODE_SIZE (sizeof(node_t))
+#define NODE_SIZE (sizeof(Node))
 // size of key
-#define KEY_SIZE (sizeof(key_t))
+#define KEY_SIZE (sizeof(Key))
 
 typedef long offset_t;
 typedef long rrn_t;

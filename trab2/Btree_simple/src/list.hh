@@ -50,12 +50,14 @@ public:
 
     // return the LAST elemet and remove it
     // this function cannot be call when the list is empty
-    const T &takeFirst();
+    const T takeFirst();
     // return the FIST elemet and remove it
     // this function cannot be call when the list is empty
-    const T &takeLast();
+    const T takeLast();
 };
 
+// we have to implement the methods here
+// because the template complains if we do not
 
 template <class T>
 List<T>::List() {
@@ -135,10 +137,10 @@ int List<T>::push_back(T elem) {
 
     if(isEmpty()) {
         _firstNode = node;
-        _lastNode = node;
     } else {
         _lastNode->next = node;
     }
+    _lastNode = node;
 
     _size++;
     return 0;
@@ -185,7 +187,7 @@ int List<T>::pop_back() {
     node_t *lastNode = NULL;
     node_t *currNode = _firstNode;
 
-    while(currNode != lastNode) {
+    while(currNode != last()) {
         lastNode = currNode;
         currNode = currNode->next;
     }
@@ -218,8 +220,8 @@ const T &List<T>::last() {
 }
 
 template <class T>
-const T &List<T>::takeFirst() {
-    const T &elem = first();
+const T List<T>::takeFirst() {
+    const T elem = first();
 
     pop_front();
 
@@ -227,7 +229,7 @@ const T &List<T>::takeFirst() {
 }
 
 template <class T>
-const T &List<T>::takeLast() {
+const T List<T>::takeLast() {
     T elem = last();
 
     pop_back();

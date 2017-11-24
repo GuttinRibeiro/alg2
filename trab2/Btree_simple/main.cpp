@@ -5,8 +5,8 @@
 int main(int argc, char *argv[]) {
     BTree btree("index.dat");
 
-//    std::cout << "Search: " << btree.search(123) << "\n";
-//    btree.insert(123, 4567);
+    std::cout << "Search: " << btree.search(4) << "\n";
+//    btree.insert(4, 4);
 
 
 //    BTree::node_t node;
@@ -21,17 +21,21 @@ int main(int argc, char *argv[]) {
 //    btree.writeNode(node);
 
 
-//    std::cout << "Root RRN: " << btree.getRootRRNFromFile() << "\n";
+//    btree.readHeader();
 //    std::cout << "Current pointer: " << btree._indexStream.tellp() << "\n";
 
-    btree._indexStream.seekg(8);
-//    BTree::node_t readNode = btree.getNodeFromFile();
+    btree._indexStream.seekg(18);
+    BTree::Node readNode = btree.loadNode();
+    readNode = btree.loadNode();
 
-//    std::cout << "keyNumber: " << readNode.keyNumber << "\n";
-//    std::cout << "key 0 value: " << readNode.keys[0].value << "\n";
-//    std::cout << "key 0 offset: " << readNode.keys[0].offset << "\n";
-//    std::cout << "link 0: " << readNode.links[0] << "\n";
-//    std::cout << "link 1: " << readNode.links[1] << "\n";
+    std::cout << "keyNumber: " << readNode.keyNumber << "\n";
+
+    for(int i = 0; i < BTREE_KEY_NUMBER; i++) {
+        std::cout << "link " << i << ": " << readNode.links[i] << "\n";
+        std::cout << "key " << i << " value: " << readNode.keys[i].value << "\n";
+        std::cout << "key " << i << " offset: " << readNode.keys[i].offset << "\n";
+    }
+    std::cout << "link " << 4 << ": " << readNode.links[4] << "\n";
 
     btree._indexStream.close();
 
