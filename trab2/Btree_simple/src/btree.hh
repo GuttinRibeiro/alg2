@@ -68,8 +68,6 @@ public:
     offset_t search(int key, bool makeHistory);
     List<nodeInfo_t *> _history;
     List<nodeInfo_t *> _updateNodes;
-
-    nodeInfo_t *split(nodeInfo_t &node, Key &insertKey, Key &ascendKey);
 public:
     BTree(const char *indexFile);
     ~BTree();

@@ -362,6 +362,11 @@ int BTree::insert(int id, offset_t offset) {
                 updateNode = false; // there no need to keep updating the nodes...
             } else { // split
 
+                // How the split work... we have to pointers in the node that
+                // shall suffer from being split... the first one walks increasing
+                // it's value, until it find the possition that the key must go, or
+                // reach the BTREE_KEY_SPLIT-1, the second do the same, but decreasing.
+
                 // create a new node
                 nodeInfo_t *newNode = new nodeInfo_t;
                 if(newNode == NULL) { // we ran out of memory? what to do?
@@ -373,44 +378,96 @@ int BTree::insert(int id, offset_t offset) {
                 }
 
                 newNode->node.keyNumber = 0;
-
-                _updateNodes.push_back(newNode); // check the newNode to be added to the index file
-
-                // copy half of the current node to the new node
-
-                int i;
-                for(i = BTREE_SPLIT_INDEX; i < BTREE_KEY_NUMBER; i++) {
-                    // copy the link and key
-                    newNode->node.links[i - BTREE_SPLIT_INDEX] = nodeInfo->node.links[i];
-                    newNode->node.keys[i - BTREE_SPLIT_INDEX] = nodeInfo->node.keys[i];
-
-                    // clean the link
-                    nodeInfo->node.links[i] = INVALID_RRN;
-
-                    // update number of keys
-                    (nodeInfo->node.keyNumber)--;
-                    (newNode->node.keyNumber)++;
-                }
-
-                // copy the last key
-                newNode->node.links[i - BTREE_SPLIT_INDEX] = nodeInfo->node.links[i];
-                // clean the link
-                nodeInfo->node.links[i] = INVALID_RRN;
-
-                // clean the rest of the links of newNode;
-                for(i = i - BTREE_SPLIT_INDEX+1; i < ORDER; i++) {
-                    newNode->node.links[i] = INVALID_RRN;
-                }
-
-                *key = nodeInfo->node.keys[BTREE_SPLIT_INDEX - 1];
-                (nodeInfo->node.keyNumber)--;
-
                 newNode->rrn = bindAvailableRRN();
-                rightLink = newNode->rrn;
+
+                _updateNodes.push_back(newNode);
+
+                // search where to put the key....
+                int i = 0;
+                while(i < BTREE_SPLIT_INDEX && key->value > nodeInfo->node.keys[i].value) {
+                    i++;
+                }
+
+                int j = BTREE_KEY_NUMBER - 1;
+                while(j >= BTREE_SPLIT_INDEX && key->value < nodeInfo->node.keys[j].value) {
+                    newNode->node.keys[j - BTREE_SPLIT_INDEX] = nodeInfo->node.keys[j];
+                    newNode->node.links[j - BTREE_SPLIT_INDEX+1] = nodeInfo->node.links[j+1];
+
+                    nodeInfo->node.keys[j].value = DEFAULT_KEY;
+                    nodeInfo->node.keys[j].offset = INVALID_OFFSET;
+                    nodeInfo->node.links[j+1] = INVALID_RRN;
+
+                    newNode->node.keyNumber++;
+                    nodeInfo->node.keyNumber--;
+
+                    j--;
+                }
+
+                if(j - i >= 0) {
+                    if(i == BTREE_SPLIT_INDEX) {
+                        // copy the key
+                        newNode->node.keys[j - BTREE_SPLIT_INDEX] = *key;
+                        newNode->node.links[j - BTREE_SPLIT_INDEX+1] = rightLink;
+
+                        newNode->node.keyNumber++;
+
+                        // set the key to the next iteration
+                        *key = nodeInfo->node.keys[BTREE_SPLIT_INDEX];
+                        rightLink = newNode->rrn;
+                        nodeInfo->node.keyNumber--;
+
+                        // finish the copy
+                        while(j >= BTREE_SPLIT_INDEX+1) {
+                            newNode->node.keys[j - BTREE_SPLIT_INDEX-1] = nodeInfo->node.keys[j];
+                            newNode->node.links[j - BTREE_SPLIT_INDEX] = nodeInfo->node.links[j+1];
+
+                            nodeInfo->node.keys[j].value = DEFAULT_KEY;
+                            nodeInfo->node.keys[j].offset = INVALID_OFFSET;
+                            nodeInfo->node.links[j+1] = INVALID_RRN;
+
+                            newNode->node.keyNumber++;
+                            nodeInfo->node.keyNumber--;
+
+                            j--;
+                        }
+                        // copy the first link
+                        newNode->node.links[0] = nodeInfo->node.links[BTREE_SPLIT_INDEX+1];
+                    } else { // j == BTREE_SPLIT_INDEX - 1
+                        // copy the first link
+                        newNode->node.links[0] = nodeInfo->node.links[BTREE_SPLIT_INDEX];
+
+                        // spaaaceee.
+                        while(j >= i) {
+                            nodeInfo->node.keys[j+1] = nodeInfo->node.keys[j];
+                            nodeInfo->node.links[j+2] = nodeInfo->node.links[j+1];
+
+                            j--;
+                        }
+
+                        nodeInfo->node.keys[i] = *key;
+                        nodeInfo->node.links[i+1] = rightLink;
+
+                        // set the key to the next iteration
+                        // REMEMBER... we move the keys and links to open space
+                        *key = nodeInfo->node.keys[BTREE_SPLIT_INDEX];
+                        rightLink = newNode->rrn;
+
+                        // clean
+                        nodeInfo->node.keys[BTREE_SPLIT_INDEX].value = DEFAULT_KEY;
+                        nodeInfo->node.keys[BTREE_SPLIT_INDEX].offset = INVALID_OFFSET;
+                        nodeInfo->node.links[BTREE_SPLIT_INDEX+1] = INVALID_RRN;
+                    }
+
+                    // clean the links
+                    for(j = BTREE_KEY_NUMBER - BTREE_SPLIT_INDEX + 1; j <= BTREE_KEY_NUMBER; j++) {
+                        newNode->node.keys[j-1].value = DEFAULT_KEY;
+                        newNode->node.keys[j-1].offset = INVALID_OFFSET;
+                        newNode->node.links[j] = INVALID_RRN;
+                    }
+                }
 
                 updateNode = true;
             }
-
             _updateNodes.push_back(nodeInfo);
         }
 
