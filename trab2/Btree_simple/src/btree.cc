@@ -338,14 +338,13 @@ int BTree::insert(int id, offset_t offset) {
         while(updateNode && _history.isEmpty() == false) { // recursion??!! fuck it!
             nodeInfo = _history.takeFirst();
 
-            // search where to put it
-            int i = 0;
-            while( i < nodeInfo->node.keyNumber && key->value > nodeInfo->node.keys[i].value ) {
-                i++;
-            }
-
-            // put it
             if(nodeInfo->node.keyNumber < BTREE_KEY_NUMBER) {
+                // search where to put it
+                int i = 0;
+                while( i < nodeInfo->node.keyNumber && key->value > nodeInfo->node.keys[i].value ) {
+                    i++;
+                }
+
                 // we have to maintain the order, therefore...
                 int j = nodeInfo->node.keyNumber;
                 while(j > i) { // move everyone to the next index
@@ -408,22 +407,27 @@ int BTree::insert(int id, offset_t offset) {
                         // copy the key
                         newNode->node.keys[j - BTREE_SPLIT_INDEX] = *key;
                         newNode->node.links[j - BTREE_SPLIT_INDEX+1] = rightLink;
+                        j--;
 
                         newNode->node.keyNumber++;
 
                         // set the key to the next iteration
                         *key = nodeInfo->node.keys[BTREE_SPLIT_INDEX];
                         rightLink = newNode->rrn;
+
+                        nodeInfo->node.keys[BTREE_SPLIT_INDEX].offset = INVALID_OFFSET;
+                        nodeInfo->node.keys[BTREE_SPLIT_INDEX].value = DEFAULT_KEY;
+
                         nodeInfo->node.keyNumber--;
 
                         // finish the copy
-                        while(j >= BTREE_SPLIT_INDEX+1) {
-                            newNode->node.keys[j - BTREE_SPLIT_INDEX-1] = nodeInfo->node.keys[j];
-                            newNode->node.links[j - BTREE_SPLIT_INDEX] = nodeInfo->node.links[j+1];
+                        while(j >= BTREE_SPLIT_INDEX) {
+                            newNode->node.keys[j - BTREE_SPLIT_INDEX] = nodeInfo->node.keys[j+1];
+                            newNode->node.links[j - BTREE_SPLIT_INDEX+1] = nodeInfo->node.links[j+2];
 
-                            nodeInfo->node.keys[j].value = DEFAULT_KEY;
-                            nodeInfo->node.keys[j].offset = INVALID_OFFSET;
-                            nodeInfo->node.links[j+1] = INVALID_RRN;
+                            nodeInfo->node.keys[j+1].value = DEFAULT_KEY;
+                            nodeInfo->node.keys[j+1].offset = INVALID_OFFSET;
+                            nodeInfo->node.links[j+2] = INVALID_RRN;
 
                             newNode->node.keyNumber++;
                             nodeInfo->node.keyNumber--;
@@ -432,11 +436,14 @@ int BTree::insert(int id, offset_t offset) {
                         }
                         // copy the first link
                         newNode->node.links[0] = nodeInfo->node.links[BTREE_SPLIT_INDEX+1];
-                    } else { // j == BTREE_SPLIT_INDEX - 1
+                        nodeInfo->node.links[BTREE_SPLIT_INDEX+1] = INVALID_RRN;
+                    } else if(j == BTREE_SPLIT_INDEX - 1) {
                         // copy the first link
                         newNode->node.links[0] = nodeInfo->node.links[BTREE_SPLIT_INDEX];
+                        nodeInfo->node.links[BTREE_SPLIT_INDEX] = INVALID_RRN;
 
                         // spaaaceee.
+                        j = BTREE_SPLIT_INDEX - 1;
                         while(j >= i) {
                             nodeInfo->node.keys[j+1] = nodeInfo->node.keys[j];
                             nodeInfo->node.links[j+2] = nodeInfo->node.links[j+1];
@@ -452,18 +459,23 @@ int BTree::insert(int id, offset_t offset) {
                         *key = nodeInfo->node.keys[BTREE_SPLIT_INDEX];
                         rightLink = newNode->rrn;
 
-                        // clean
-                        nodeInfo->node.keys[BTREE_SPLIT_INDEX].value = DEFAULT_KEY;
                         nodeInfo->node.keys[BTREE_SPLIT_INDEX].offset = INVALID_OFFSET;
-                        nodeInfo->node.links[BTREE_SPLIT_INDEX+1] = INVALID_RRN;
+                        nodeInfo->node.keys[BTREE_SPLIT_INDEX].value = DEFAULT_KEY;
+                    } else {
+                        std::cout << "deu ruim " << key->value <<" \n\n\n\n\n\n";
                     }
 
                     // clean the links
-                    for(j = BTREE_KEY_NUMBER - BTREE_SPLIT_INDEX + 1; j <= BTREE_KEY_NUMBER; j++) {
-                        newNode->node.keys[j-1].value = DEFAULT_KEY;
-                        newNode->node.keys[j-1].offset = INVALID_OFFSET;
-                        newNode->node.links[j] = INVALID_RRN;
+                    for(j = BTREE_KEY_NUMBER - BTREE_SPLIT_INDEX; j < BTREE_KEY_NUMBER; j++) {
+                        newNode->node.keys[j].value = DEFAULT_KEY;
+                        newNode->node.keys[j].offset = INVALID_OFFSET;
+                        newNode->node.links[j+1] = INVALID_RRN;
                     }
+                } else {
+                    // copy the first link
+                    newNode->node.links[0] = nodeInfo->node.links[BTREE_SPLIT_INDEX];
+                    nodeInfo->node.links[BTREE_SPLIT_INDEX] = INVALID_RRN;
+                    rightLink = newNode->rrn;
                 }
 
                 updateNode = true;
@@ -484,6 +496,7 @@ int BTree::insert(int id, offset_t offset) {
 
             _updateNodes.push_back(newNode); // check the newNode to be added to the index file
 
+            newNode->rrn = bindAvailableRRN();
             newNode->node.keyNumber = 1;
             newNode->node.keys[0] = *key;
 
@@ -496,11 +509,12 @@ int BTree::insert(int id, offset_t offset) {
             newNode->node.links[1] = rightLink;
 
             int i;
-            for(i = 2; i < ORDER; i++) {
-                newNode->node.links[i] = INVALID_RRN;
+            for(i = 1; i < BTREE_KEY_NUMBER; i++) {
+                newNode->node.links[i+1] = INVALID_RRN;
+                newNode->node.keys[i].offset = INVALID_OFFSET;
+                newNode->node.keys[i].value = DEFAULT_KEY;
             }
 
-            newNode->rrn = bindAvailableRRN();
 
             setRootRRN(newNode->rrn);
         }
