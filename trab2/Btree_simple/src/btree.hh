@@ -12,7 +12,7 @@
 using namespace std;
 
 class BTree {
-public:
+private:
     struct Header {
         static constexpr char headerMsg[] = {'B', 'T'};
         rrn_t RRNCounter;
@@ -70,12 +70,15 @@ public:
     List<nodeInfo_t *> _history;
     List<nodeInfo_t *> _updateNodes;
 
+    List<rrn_t> _printQueue;
+
     LogHandle *_log;
+    LogHandle &log() { return *_log; }
+
+    void printNode(Node &node);
 public:
     BTree(const char *indexFile, LogHandle *log);
     ~BTree();
-
-    LogHandle &log() { return *_log; }
 
     const char *indexPath() { return _indexFile; }
 
@@ -95,10 +98,12 @@ public:
     rrn_t toNodeRRN(offset_t offset);
 
     const char *readNode();
+    const char *readNode(rrn_t rrn);
     void writeNode(Node &node);
 
     // load node into buffer
     Node &loadNode();
+    Node &loadNodeAt(rrn_t rrn);
     // put node into a destination
     void getNode(Node &dest);
 
@@ -110,6 +115,8 @@ public:
     int insert(int id, offset_t offset);
     offset_t search(int key);
     int remove(int id);
+
+    void print();
 };
 
 #endif // BTREE_HH

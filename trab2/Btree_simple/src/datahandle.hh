@@ -20,6 +20,8 @@ public:
 
     void rebuildIndexFile();
 
+    void printBTree();
+
     LogHandle &log() { return *_log; }
 };
 

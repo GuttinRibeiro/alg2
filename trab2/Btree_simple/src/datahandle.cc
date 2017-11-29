@@ -42,11 +42,15 @@ void DataHandle::insert(RegisterParser::Register_t &reg) {
           << reg.genero << ".\n";
     log().hold(false);
 
+    _parser->hold(true);
+    _parser->openDataFile();
     offset_t offset = _parser->writeOffset();
 
     if( _btree->insert(reg.id, offset) == 0) {
         _parser->pushRegister(reg);
     }
+    _parser->hold(false);
+    _parser->closeDataFile();
 }
 
 RegisterParser::Register_t DataHandle::search(int id) {
@@ -105,4 +109,9 @@ void DataHandle::rebuildIndexFile() {
 
     _parser->hold(false);
     _parser->closeDataFile();
+}
+
+
+void DataHandle::printBTree() {
+    _btree->print();
 }

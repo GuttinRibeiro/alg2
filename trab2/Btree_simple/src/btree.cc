@@ -246,6 +246,18 @@ const char *BTree::readNode() {
     }
 }
 
+const char *BTree::readNode(rrn_t rrn) {
+    if( _indexStream.is_open() ) {
+        _indexStream.seekg(toNodeOffset(rrn));
+        _indexStream.read(_nodeBuffer, NODE_SIZE);
+        return _nodeBuffer;
+    } else {
+        cout << "[Warning] BTree::readNode() receive a call with a close file.\n";
+        flushNodeBuffer();
+        return _nodeBuffer;
+    }
+}
+
 void BTree::writeNode(Node &node) {
     if( _indexStream.is_open() ) {
         _indexStream.write(nodeParser(node), sizeof(node));
@@ -256,6 +268,10 @@ void BTree::writeNode(Node &node) {
 
 BTree::Node &BTree::loadNode() {
     return nodeParser(readNode());
+}
+
+BTree::Node &BTree::loadNodeAt(rrn_t rrn) {
+    return nodeParser(readNode(rrn));
 }
 
 void BTree::getNode(Node &dest) {
@@ -653,4 +669,67 @@ offset_t BTree::search(int key, bool makeHistory) {
 
 offset_t BTree::search(int key) {
     return search(key, false);
+}
+
+void BTree::print() {
+    log() << "Execucao de operacao para mostrar a arvore-B gerada:\n";
+
+    if(rootRRN() == INVALID_RRN) {
+        return;
+    }
+
+    openIndexFile();
+
+    _printQueue.clean();
+    _printQueue.push_back(rootRRN());
+    _printQueue.push_back(INVALID_RRN);
+
+    int level = 0;
+    while(_printQueue.isEmpty() == false) {
+        rrn_t curr = _printQueue.takeFirst();
+        if(curr == INVALID_RRN) {
+            level++;
+
+            if(_printQueue.isEmpty() == false) {
+                _printQueue.push_back(INVALID_RRN);
+            }
+
+            continue;
+        }
+
+        log().hold(true);
+        log() << level << " ";
+        std::cout << level << " ";
+
+        Node &node = loadNodeAt(curr);
+        printNode(node);
+        log().hold(false);
+
+        int i = 0;
+        while(i <= node.keyNumber && node.links[i] != INVALID_RRN) {
+            _printQueue.push_back(node.links[i]);
+            i++;
+        }
+    }
+
+    closeIndexFile();
+}
+
+
+void BTree::printNode(Node &node) {
+    log().hold(true);
+    log() << node.keyNumber << " ";
+    std::cout << node.keyNumber << " ";
+    int i;
+    for(i = 0; i < node.keyNumber; i++) {
+        log() << "<" << node.keys[i].value << "/" << node.keys[i].offset << "> ";
+//        std::cout << node.links[i] << " ";
+        std::cout << "<" << node.keys[i].value << "/" << node.keys[i].offset << "> ";
+    }
+
+//    std::cout << node.links[i] << " ";
+
+    log() << "\n";
+    std::cout << "\n";
+    log().hold(false);
 }

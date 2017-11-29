@@ -1,17 +1,140 @@
-Execucao de operacao de INSERCAO de 1, Titulo 1, Titulo 2, .
+Execucao de operacao de INSERCAO de 1, Titulo 1, Genero 1.
 Chave 1 inserida com sucesso.
-Execucao de operacao de INSERCAO de 2, Titulo 2, Genero 2.
-Chave 2 inserida com sucesso.
-Execucao de operacao de INSERCAO de 5, Titulo 5, Genero 5.
-Chave 5 inserida com sucesso.
-Execucao de operacao de INSERCAO de 3, Titulo 3, Genero 3.
-Chave 3 inserida com sucesso.
-Execucao de operacao de INSERCAO de 4, Titulo 4, Genero 4.
-Divisao de no - pagina 0
-Chave 3
-Chave 4 inserida com sucesso.
+0 1 <1/3> 
 Execucao de operacao de INSERCAO de 6, Titulo 6, Genero 6.
 Chave 6 inserida com sucesso.
-Execucao de operacao de INSERCAO de 6, Titulo 6, Genero 6.
-Chave 6 duplicada.
-Chave -1 inserida com sucesso.
+0 2 <1/3> <6/37> 
+Execucao de operacao de INSERCAO de 5, Titulo 5, Genero 5.
+Chave 5 inserida com sucesso.
+0 3 <1/3> <5/71> <6/37> 
+Execucao de operacao de INSERCAO de 2, Titulo 2, Genero 2.
+Chave 2 inserida com sucesso.
+0 4 <1/3> <2/105> <5/71> <6/37> 
+Execucao de operacao de INSERCAO de 3, Titulo 3, Genero 3.
+Divisao de no - pagina 0
+Chave 3 promovida
+Chave 3 inserida com sucesso.
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+Execucao de operacao de INSERCAO de 4, Titulo 4, Genero 4.
+Chave 4 inserida com sucesso.
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+Execucao de operacao de PESQUISA de 3
+Chave 3 encontrada, offset 139, Titulo: Titulo 3, Genero: Genero 3
+Execucao de operacao de PESQUISA de 5
+Chave 5 encontrada, offset 71, Titulo: Titulo 5, Genero: Genero 5
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+1 3 <4/173> <5/71> <6/37> 
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+1 3 <4/173> <5/71> <6/37> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+1 3 <4/173> <5/71> <6/37> 
+Execucao de operacao de INSERCAO de 9, Titulo 9, Genero 9.
+Chave 9 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <3/139> 
+1 2 <1/3> <2/105> 
+1 4 <4/173> <5/71> <6/37> <9/207> 
+Execucao de operacao de INSERCAO de 8, Titulo 8, Genero 8.
+Divisao de no - pagina 1
+Chave 6 promovida
+Chave 8 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 2 <3/139> <6/37> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <8/241> <9/207> 
+Execucao de operacao de INSERCAO de 7, Titulo 7, Genero 7.
+Chave 7 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 2 <3/139> <6/37> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 3 <7/275> <8/241> <9/207> 
+Execucao de operacao para mostrar a arvore-B gerada:
+0 2 <3/139> <6/37> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 3 <7/275> <8/241> <9/207> 
+Execucao de operacao de INSERCAO de 10, Titulo 10, Genero 10.
+Chave 10 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 2 <3/139> <6/37> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 4 <7/275> <8/241> <9/207> <10/309> 
+Execucao de operacao de INSERCAO de 12, Titulo 12, Genero 12.
+Divisao de no - pagina 3
+Chave 9 promovida
+Chave 12 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 2 <10/309> <12/345> 
+Execucao de operacao de INSERCAO de 11, Titulo 11, Genero 11.
+Chave 11 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 3 <10/309> <11/381> <12/345> 
+Execucao de operacao de INSERCAO de 10, Titulo 10, Genero 10.
+Chave 10 duplicada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 3 <10/309> <11/381> <12/345> 
+Execucao de operacao de INSERCAO de 12, Titulo 12, Genero 12.
+Chave 12 duplicada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 3 <10/309> <11/381> <12/345> 
+Execucao de operacao de INSERCAO de 11, Titulo 11, Genero 11.
+Chave 11 duplicada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 3 <10/309> <11/381> <12/345> 
