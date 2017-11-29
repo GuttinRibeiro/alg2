@@ -7,7 +7,7 @@
 
 #define INVALID_OFFSET (-1)
 #define INVALID_RRN (-1)
-#define DEFAULT_KEY (0)
+#define DEFAULT_KEY (-1)
 
 #define ORDER (5)
 #define TITLE_LENGTH (30)

@@ -6,11 +6,13 @@ CONFIG -= qt
 SOURCES += main.cpp \
     src/btree.cc \
     src/registerparser.cc \
-    src/dataparser.cc
+    src/datahandle.cc \
+    src/loghandle.cc
 
 HEADERS += \
     src/btree.hh \
     src/list.hh \
     src/registerparser.hh \
-    src/dataparser.hh \
-    src/sharedheader.h
+    src/sharedheader.h \
+    src/datahandle.hh \
+    src/loghandle.hh

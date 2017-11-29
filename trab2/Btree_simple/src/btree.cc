@@ -2,7 +2,9 @@
 
 constexpr char BTree::Header::headerMsg[];
 
-BTree::BTree(const char *indexFile) {
+BTree::BTree(const char *indexFile, LogHandle *log) {
+    _log = log;
+
     _indexFile = indexFile;
     _isFileOpened = 0;
     _isHeaderUpdated = false;
@@ -16,6 +18,11 @@ BTree::BTree(const char *indexFile) {
         if(_indexStream.peek() == ifstream::traits_type::eof()) {
             cerr << "[Warning] BTree receive an empty file. Overwriting.\n";
 
+            // for some reason, the file doesn't write with in and out
+            _indexStream.close();
+            _indexStream.open(indexFile, fstream::out // open as write
+                                       | fstream::binary); // set as a binary file
+
             // test if we can write on the file
             if(!(_indexStream.write(Header::headerMsg, 2) )) {
                 cerr << "[Error] BTree couldn't write on file.\n";
@@ -24,6 +31,7 @@ BTree::BTree(const char *indexFile) {
 
             // write default header
             writeHeader();
+            _indexStream.close();
         } else {
             // file isn't empty
 
@@ -320,6 +328,7 @@ void BTree::decodeNodeTo(Node &dest, const char *src) {
 }
 
 int BTree::insert(int id, offset_t offset) {
+    std::cout << "Insert: " << id << "\n";
     // search where to put the key
     _history.deleteAll(); // cleans up the _history
     offset_t dataOffset = search(id, true);
@@ -360,7 +369,6 @@ int BTree::insert(int id, offset_t offset) {
 
                 updateNode = false; // there no need to keep updating the nodes...
             } else { // split
-
                 // How the split work... we have to pointers in the node that
                 // shall suffer from being split... the first one walks increasing
                 // it's value, until it find the possition that the key must go, or
@@ -461,8 +469,6 @@ int BTree::insert(int id, offset_t offset) {
 
                         nodeInfo->node.keys[BTREE_SPLIT_INDEX].offset = INVALID_OFFSET;
                         nodeInfo->node.keys[BTREE_SPLIT_INDEX].value = DEFAULT_KEY;
-                    } else {
-                        std::cout << "deu ruim " << key->value <<" \n\n\n\n\n\n";
                     }
 
                     // clean the links
@@ -477,6 +483,11 @@ int BTree::insert(int id, offset_t offset) {
                     nodeInfo->node.links[BTREE_SPLIT_INDEX] = INVALID_RRN;
                     rightLink = newNode->rrn;
                 }
+
+                log().hold(true);
+                log() << "Divisao de no - pagina " << nodeInfo->rrn << "\n"
+                      << "Chave " << key->value << " promovida\n";
+                log().hold(false);
 
                 updateNode = true;
             }
@@ -561,6 +572,11 @@ int BTree::insert(int id, offset_t offset) {
 
     } else { // it seen that our key aready exists
         std::cout << "[Warning] BTree::insert receive an existing key.\n";
+        log().hold(true);
+        log() << "Chave " << id << " duplicada.\n";
+        log().hold(false);
+
+        return -2;
     }
 
     // delete everything
@@ -568,6 +584,10 @@ int BTree::insert(int id, offset_t offset) {
     _updateNodes.deleteAll();
 
     _indexStream.close();
+
+    log().hold(true);
+    log() << "Chave " << id << " inserida com sucesso.\n";
+    log().hold(false);
 
     return 0;
 }

@@ -3,6 +3,7 @@
 
 #include "sharedheader.h"
 #include "list.hh"
+#include "loghandle.hh"
 
 #define BTREE_KEY_NUMBER (ORDER-1)
 #define BTREE_INVALID_KEY_NUMBER (-1)
@@ -68,9 +69,15 @@ public:
     offset_t search(int key, bool makeHistory);
     List<nodeInfo_t *> _history;
     List<nodeInfo_t *> _updateNodes;
+
+    LogHandle *_log;
 public:
-    BTree(const char *indexFile);
+    BTree(const char *indexFile, LogHandle *log);
     ~BTree();
+
+    LogHandle &log() { return *_log; }
+
+    const char *indexPath() { return _indexFile; }
 
     /* link function */
     size_t linkParser(char *dest, rrn_t &link);
