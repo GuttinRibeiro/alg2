@@ -1,32 +1,76 @@
 #include <iostream>
 #include "src/datahandle.hh"
 
+enum { // menu options
+    REBUID_INDEX = 1,
+    INSERT       = 2,
+    SEARCH       = 3,
+    REMOVE       = 4,
+    PRINT        = 5,
+    EXIT         = 6
+};
+
 int main(int argc, char *argv[]) {
     DataHandle data("data.dat", "index.dat", "log.dat");
 
-//    RegisterParser::Register_t reg;
-//    reg.id = 10;
-//    memcpy(reg.titulo, "Titulo 10", 9);
-//    memcpy(reg.genero, "Genero 10", 9);
-//    data.insert(reg);
+    int option = -1;
 
-//    data.printBTree();
+    while(option != EXIT) {
+        std::cout << "Menu\n";
+        std::cout << "Opcao ..... Descricao\n";
+        std::cout << REBUID_INDEX << " ......... Criar arquivo de indice.\n";
+        std::cout << INSERT << " ......... Inserir musica.\n";
+        std::cout << SEARCH << " ......... Buscar musica.\n";
+        std::cout << REMOVE << " ......... Remover musica.\n";
+        std::cout << PRINT << " ......... Imprimir arvore-B.\n";
+        std::cout << EXIT << " ......... Sair.\n";
 
-//    reg.id = 12;
-//    memcpy(reg.titulo, "Titulo 12", 9);
-//    memcpy(reg.genero, "Genero 12", 9);
-//    data.insert(reg);
+        std::cout << "Digite a opcao: ";
 
-//    data.printBTree();
+        std::cin >> option;
 
-//    reg.id = 11;
-//    memcpy(reg.titulo, "Titulo 11", 9);
-//    memcpy(reg.genero, "Genero 11", 9);
-//    data.insert(reg);
+        switch(option) {
+            case REBUID_INDEX: {
+                data.rebuildIndexFile();
+            } break;
+            case INSERT: {
+                RegisterParser::Register_t reg;
 
-//    data.printBTree();
-//    data.search(5);
-//    data.printBTree();
+                std::cout << "Digite a ID da musica: ";
+                std::cin >> reg.id;
+
+                std::cout << "Digite o titulo: ";
+                std::cin >> reg.titulo;
+
+                std::cout << "Digite o genero: ";
+                std::cin >> reg.genero;
+
+                data.insert(reg);
+            } break;
+            case SEARCH: {
+                int id = -1;
+                std::cout << "Digite o ID a ser buscado: ";
+                std::cin >> id;
+
+                data.search(id);
+            } break;
+            case REMOVE: {
+                std::cout << "Funcao nao implementada.\n";
+
+            } break;
+            case PRINT: {
+                data.printBTree();
+            } break;
+            case EXIT: {
+
+            } break;
+            default: {
+                std::cout << "Opcao invalida.\n";
+            } break;
+        }
+
+        std::cout << "\n";
+    }
 
     return 0;
 }

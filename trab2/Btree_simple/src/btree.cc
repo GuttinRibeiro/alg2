@@ -344,7 +344,6 @@ void BTree::decodeNodeTo(Node &dest, const char *src) {
 }
 
 int BTree::insert(int id, offset_t offset) {
-    std::cout << "Insert: " << id << "\n";
     // search where to put the key
     _history.deleteAll(); // cleans up the _history
     offset_t dataOffset = search(id, true);
@@ -587,7 +586,6 @@ int BTree::insert(int id, offset_t offset) {
         delete key;
 
     } else { // it seen that our key aready exists
-        std::cout << "[Warning] BTree::insert receive an existing key.\n";
         log().hold(true);
         log() << "Chave " << id << " duplicada.\n";
         log().hold(false);
@@ -609,7 +607,24 @@ int BTree::insert(int id, offset_t offset) {
 }
 
 int BTree::remove(int id) {
-    // TODO
+    _history.deleteAll();
+    offset_t offset = search(id, true);
+
+    if(offset != INVALID_OFFSET) {
+        nodeInfo_t *nodeInfo = _history.takeFirst();
+
+        // search position
+        int i = 0;
+        while(i < nodeInfo->node.keyNumber && nodeInfo->node.keys[i].value < id) {
+            i++;
+        }
+
+        if(nodeInfo->node.links[i] == INVALID_OFFSET && nodeInfo->node.links[i+1] == INVALID_OFFSET) { // leaf
+
+        }
+    } else { // INVALID_OFFSET
+
+    }
 
     return 0;
 }
@@ -699,7 +714,6 @@ void BTree::print() {
 
         log().hold(true);
         log() << level << " ";
-        std::cout << level << " ";
 
         Node &node = loadNodeAt(curr);
         printNode(node);
@@ -719,17 +733,12 @@ void BTree::print() {
 void BTree::printNode(Node &node) {
     log().hold(true);
     log() << node.keyNumber << " ";
-    std::cout << node.keyNumber << " ";
     int i;
     for(i = 0; i < node.keyNumber; i++) {
         log() << "<" << node.keys[i].value << "/" << node.keys[i].offset << "> ";
-//        std::cout << node.links[i] << " ";
-        std::cout << "<" << node.keys[i].value << "/" << node.keys[i].offset << "> ";
     }
 
-//    std::cout << node.links[i] << " ";
 
     log() << "\n";
-    std::cout << "\n";
     log().hold(false);
 }

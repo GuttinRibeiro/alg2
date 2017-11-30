@@ -138,3 +138,111 @@ Execucao de operacao para mostrar a arvore-B gerada:
 1 2 <4/173> <5/71> 
 1 2 <7/275> <8/241> 
 1 3 <10/309> <11/381> <12/345> 
+Execucao de operacao de PESQUISA de 1
+Chave 1 encontrada, offset 3, Titulo: Titulo 1, Genero: Genero 1
+Execucao de operacao de PESQUISA de 2
+Chave 2 encontrada, offset 105, Titulo: Titulo 2, Genero: Genero 2
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 1 duplicada.
+Chave 6 duplicada.
+Chave 5 duplicada.
+Chave 2 duplicada.
+Chave 3 duplicada.
+Chave 4 duplicada.
+Chave 9 duplicada.
+Chave 8 duplicada.
+Chave 7 duplicada.
+Chave 10 duplicada.
+Chave 12 duplicada.
+Chave 11 duplicada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 3 <10/309> <11/381> <12/345> 
+Execucao de operacao de INSERCAO de 98, Titulo, Genero.
+Chave 98 inserida com sucesso.
+Execucao de operacao de PESQUISA de 98
+Chave 98 encontrada, offset 417, Titulo: Titulo, Genero: Genero
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 1 duplicada.
+Chave 6 duplicada.
+Chave 5 duplicada.
+Chave 2 duplicada.
+Chave 3 duplicada.
+Chave 4 duplicada.
+Chave 9 duplicada.
+Chave 8 duplicada.
+Chave 7 duplicada.
+Chave 10 duplicada.
+Chave 12 duplicada.
+Chave 11 duplicada.
+Chave 98 duplicada.
+Execucao de operacao de PESQUISA de 98
+Chave 98 encontrada, offset 417, Titulo: Titulo, Genero: Genero
+Execucao de operacao de PESQUISA de 98
+Chave 98 encontrada, offset 417, Titulo: Titulo, Genero: Genero
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 1 duplicada.
+Chave 6 duplicada.
+Chave 5 duplicada.
+Chave 2 duplicada.
+Chave 3 duplicada.
+Chave 4 duplicada.
+Chave 9 duplicada.
+Chave 8 duplicada.
+Chave 7 duplicada.
+Chave 10 duplicada.
+Chave 12 duplicada.
+Chave 11 duplicada.
+Chave 98 duplicada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <3/139> <6/37> <9/207> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 4 <10/309> <11/381> <12/345> <98/417> 
+Execucao de operacao de INSERCAO de 123, Titulo, 123.
+Divisao de no - pagina 4
+Chave 12 promovida
+Chave 123 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 4 <3/139> <6/37> <9/207> <12/345> 
+1 2 <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 2 <10/309> <11/381> 
+1 2 <98/417> <123/447> 
+Execucao de operacao de INSERCAO de 0, RE, Triller.
+Chave 0 inserida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 4 <3/139> <6/37> <9/207> <12/345> 
+1 3 <0/474> <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 2 <10/309> <11/381> 
+1 2 <98/417> <123/447> 
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 1 duplicada.
+Chave 6 duplicada.
+Chave 5 duplicada.
+Chave 2 duplicada.
+Chave 3 duplicada.
+Chave 4 duplicada.
+Chave 9 duplicada.
+Chave 8 duplicada.
+Chave 7 duplicada.
+Chave 10 duplicada.
+Chave 12 duplicada.
+Chave 11 duplicada.
+Chave 98 duplicada.
+Chave 123 duplicada.
+Chave 0 duplicada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 4 <3/139> <6/37> <9/207> <12/345> 
+1 3 <0/474> <1/3> <2/105> 
+1 2 <4/173> <5/71> 
+1 2 <7/275> <8/241> 
+1 2 <10/309> <11/381> 
+1 2 <98/417> <123/447> 

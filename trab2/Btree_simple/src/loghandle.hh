@@ -1,6 +1,7 @@
 #ifndef LOGHANDLE_HH
 #define LOGHANDLE_HH
 
+#include <iostream>
 #include <fstream>
 
 class LogHandle {

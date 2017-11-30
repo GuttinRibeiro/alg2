@@ -31,6 +31,7 @@ void LogHandle::closeLog() {
 LogHandle &LogHandle::operator <<(const char *msg) {
     if(openLog()) {
         _logStream << msg;
+        std::cout << msg;
     }
 
     closeLog();
@@ -41,6 +42,7 @@ LogHandle &LogHandle::operator <<(const char *msg) {
 LogHandle &LogHandle::operator <<(int msg) {
     if(openLog()) {
         _logStream << msg;
+        std::cout << msg;
     }
 
     closeLog();;
@@ -51,6 +53,7 @@ LogHandle &LogHandle::operator <<(int msg) {
 LogHandle &LogHandle::operator <<(long msg) {
     if(openLog()) {
         _logStream << msg;
+        std::cout << msg;
     }
 
     closeLog();;

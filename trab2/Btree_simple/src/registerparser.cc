@@ -216,8 +216,6 @@ offset_t RegisterParser::pushRegister(Register_t &reg) {
 const char *RegisterParser::getNextRegister() {
     if(openDataFile()) {
         bufferptr_t size = 0;
-        std::cout << _dataStream.tellg() << "\n";
-        std::cout << _dataStream.tellp() << "\n";
         // read the size of the register;
         _dataStream.read(_registerBuffer, sizeof(size));
         memcpy(&size, _registerBuffer, sizeof(size));
