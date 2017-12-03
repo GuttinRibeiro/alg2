@@ -156,12 +156,29 @@ int List<T>::remove(int idx) {
     }
 
     node_t *node = _firstNode;
+    node_t *prev = NULL;
+    if(idx == 0) {
+        _firstNode = node->next;
+    }
+
     int i = 0;
     while(i < idx) {
+        prev = node;
         node = node->next;
+        i++;
+    }
+
+    if(idx == size() - 1) {
+        _lastNode = prev;
+    }
+
+    if(prev != NULL) {
+        prev->next = node->next;
     }
 
     delete node;
+
+    _size--;
 
     return 0;
 }

@@ -695,8 +695,8 @@ offset_t BTree::remove(int id) {
                 nodeInfo->node.keys[i] = leafNode->node.keys[leafNode->node.keyNumber-1];
 
                 log().hold(true);
-                log() << "Chave " << nodeInfo->node.keys[i].value << " promovida.\n";
-                log() << "Chave " << id << " rebaixada.\n";
+                log() << "Chave " << nodeInfo->node.keys[i].value << " promovida.\n"
+                      << "Chave " << id << " rebaixada.\n";
                 log().hold(false);
 
                 // we dont loose the reference: everything is inside _history
@@ -725,8 +725,8 @@ offset_t BTree::remove(int id) {
                 nodeInfo->node.keys[i] = leafNode->node.keys[0];
 
                 log().hold(true);
-                log() << "Chave " << nodeInfo->node.keys[i].value << " promovida.\n";
-                log() << "Chave " << id << " rebaixada.\n";
+                log() << "Chave " << nodeInfo->node.keys[i].value << " promovida.\n"
+                      << "Chave " << id << " rebaixada.\n";
                 log().hold(false);
 
                 // we dont loose the reference: everything is inside _history
@@ -784,7 +784,13 @@ offset_t BTree::remove(int id) {
                             removeKeyFromNode(rightSibling->node, 0, LEFT_SIDE);
                             updateNode = false;
 
-                            log() << "Redistribuicao de chaves - entre as paginas irmas X e Y.\n";
+                            log().hold(true);
+                            log() << "Redistribuicao de chaves - entre as paginas irmas "
+                                  << nodeInfo->rrn
+                                  << " e "
+                                  << rightSibling->rrn
+                                  << ".\n";
+                            log().hold(false);
                         } else {
                             appendKeyToNode(nodeInfo->node, fatherInfo->node.keys[idx], rightSibling->node.links[0]);
                             removeKeyFromNode(fatherInfo->node, idx, RIGHT_SIDE);
@@ -800,7 +806,13 @@ offset_t BTree::remove(int id) {
                                 rightSibling->node.keyNumber--;
                             }
 
-                            log() << "Concatenacao de chaves - entre as paginas irmas X e Y.\n";
+                            log().hold(true);
+                            log() << "Concatenacao de chaves - entre as paginas irmas "
+                                  << nodeInfo->rrn
+                                  << " e "
+                                  << rightSibling->rrn
+                                  << ".\n";
+                            log().hold(false);
                         }
 
                         _updateNodes.push_back(rightSibling);
@@ -817,7 +829,13 @@ offset_t BTree::remove(int id) {
                             removeKeyFromNode(leftSibling->node, leftSibling->node.keyNumber-1, RIGHT_SIDE);
                             updateNode = false;
 
-                            log() << "Redistribuicao de chaves - entre as paginas irmas X e Y.\n";
+                            log().hold(true);
+                            log() << "Redistribuicao de chaves - entre as paginas irmas "
+                                  << leftSibling->rrn
+                                  << " e "
+                                  << nodeInfo->rrn
+                                  << ".\n";
+                            log().hold(false);
                         } else {
                             appendKeyToNode(leftSibling->node, fatherInfo->node.keys[idx-1], nodeInfo->node.links[0]);
                             removeKeyFromNode(fatherInfo->node, idx-1, RIGHT_SIDE);
@@ -833,7 +851,13 @@ offset_t BTree::remove(int id) {
                                 nodeInfo->node.keyNumber--;
                             }
 
-                            log() << "Concatenacao de chaves - entre as paginas irmas X e Y.\n";
+                            log().hold(true);
+                            log() << "Concatenacao de chaves - entre as paginas irmas "
+                                  << leftSibling->rrn
+                                  << " e "
+                                  << nodeInfo->rrn
+                                  << ".\n";
+                            log().hold(false);
                         }
 
                         _updateNodes.push_back(leftSibling);
@@ -851,6 +875,8 @@ offset_t BTree::remove(int id) {
                         _updateNodes.push_back(fatherInfo);
                     }
                     nodeInfo = fatherInfo;
+                } else {
+                    updateNode = false;
                 }
             }
         }
@@ -864,7 +890,8 @@ offset_t BTree::remove(int id) {
         }
 
         if(nodeInfoIdx >= 0) {
-            _history.remove(nodeInfoIdx);
+            // remove from the end
+            _history.remove(_history.size() - 1 - nodeInfoIdx);
         }
     } else { // INVALID_OFFSET
         log().hold(true);

@@ -2,6 +2,11 @@
 
 LogHandle::LogHandle(const char *logFile) {
     _logFile = logFile;
+    openLog();
+}
+
+LogHandle::~LogHandle() {
+    _logStream.close();
 }
 
 void LogHandle::hold(bool hold) {
@@ -29,34 +34,22 @@ void LogHandle::closeLog() {
 }
 
 LogHandle &LogHandle::operator <<(const char *msg) {
-    if(openLog()) {
-        _logStream << msg;
-        std::cout << msg;
-    }
-
-    closeLog();
+    _logStream << msg;
+    std::cout << msg;
 
     return *this;
 }
 
 LogHandle &LogHandle::operator <<(int msg) {
-    if(openLog()) {
-        _logStream << msg;
-        std::cout << msg;
-    }
-
-    closeLog();;
+    _logStream << msg;
+    std::cout << msg;
 
     return *this;
 }
 
 LogHandle &LogHandle::operator <<(long msg) {
-    if(openLog()) {
-        _logStream << msg;
-        std::cout << msg;
-    }
-
-    closeLog();;
+    _logStream << msg;
+    std::cout << msg;
 
     return *this;
 }

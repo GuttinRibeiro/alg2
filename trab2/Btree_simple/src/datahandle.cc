@@ -63,6 +63,10 @@ void DataHandle::insert(RegisterParser::Register_t &reg) {
 
         _btree->setUpdated(BTree::Header::UPDATED);
         _btree->writeHeader();
+    } else {
+        log().hold(true);
+        log() << "Chave " << reg.id << " duplicada.\n";
+        log().hold(false);
     }
 
     _parser->hold(false);

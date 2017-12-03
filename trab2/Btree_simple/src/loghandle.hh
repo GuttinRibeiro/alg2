@@ -15,6 +15,7 @@ private:
     void closeLog();
 public:
     LogHandle(const char *logFile);
+    ~LogHandle();
 
     void hold(bool hold);
     void saveOnLog(const char *log);
