@@ -24,4 +24,8 @@ typedef long offset_t;
 typedef long rrn_t;
 typedef unsigned long bufferptr_t;
 
+class BTree;
+class DataHandle;
+class RegisterParser;
+
 #endif // COMMONHEADER_H

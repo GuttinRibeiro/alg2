@@ -26,6 +26,12 @@ DataHandle::DataHandle(const char *dataFile, const char *indexFile, const char *
         delete _log;
         abort();
     }
+
+    if(_btree->isUpdated() == BTree::Header::REVIEW) {
+        RegisterParser::Register_t &lastRegister = _parser->decodeLastModifiedRegister();
+        _btree->insert(lastRegister.id, _parser->lastModifiedOffset());
+        _btree->setUpdated(BTree::Header::UPDATED);
+    }
 }
 
 DataHandle::~DataHandle() {
@@ -44,11 +50,21 @@ void DataHandle::insert(RegisterParser::Register_t &reg) {
 
     _parser->hold(true);
     _parser->openDataFile();
-    offset_t offset = _parser->writeOffset();
 
-    if( _btree->insert(reg.id, offset) == 0) {
-        _parser->pushRegister(reg);
+    _btree->_history.deleteAll(); // cleans up the _history
+    offset_t offset = _btree->search(reg.id, true);
+
+    if(offset == INVALID_OFFSET) {
+        _btree->setUpdated(BTree::Header::REVIEW);
+        _btree->writeHeader();
+
+        offset = _parser->pushRegister(reg);
+        _btree->insertWithoutSearch(reg.id, offset);
+
+        _btree->setUpdated(BTree::Header::UPDATED);
+        _btree->writeHeader();
     }
+
     _parser->hold(false);
     _parser->closeDataFile();
 }
@@ -86,6 +102,14 @@ RegisterParser::Register_t DataHandle::search(int id) {
     return reg;
 }
 
+void DataHandle::remove(int id) {
+    offset_t offset = _btree->remove(id);
+
+    if(offset != INVALID_OFFSET) {
+        _parser->removeRegisterAt(offset);
+    }
+}
+
 void DataHandle::rebuildIndexFile() {
     log().hold(true);
     log() << "Execucao da criacao do arquivo de indice "
@@ -102,7 +126,10 @@ void DataHandle::rebuildIndexFile() {
 
     while(offset != INVALID_OFFSET) {
         RegisterParser::Register_t &reg = _parser->decodeNextRegister();
-        _btree->insert(reg.id, offset);
+
+        if(reg.id != DEFAULT_KEY) {
+            _btree->insert(reg.id, offset);
+        }
 
         offset = _parser->readOffset();
     }

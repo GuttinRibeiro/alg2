@@ -36,6 +36,9 @@ public:
     // add elem into the back of the list
     int push_back(T elem);
 
+    // remove the element with index idx
+    int remove(int idx);
+
     // remove the FIST element of the list
     int pop_front();
     // remove the LAST element of the list
@@ -143,6 +146,23 @@ int List<T>::push_back(T elem) {
     _lastNode = node;
 
     _size++;
+    return 0;
+}
+
+template <class T>
+int List<T>::remove(int idx) {
+    if(idx < 0 || idx >= size()) {
+        return -1;
+    }
+
+    node_t *node = _firstNode;
+    int i = 0;
+    while(i < idx) {
+        node = node->next;
+    }
+
+    delete node;
+
     return 0;
 }
 

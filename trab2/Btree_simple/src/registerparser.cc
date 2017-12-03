@@ -8,6 +8,9 @@ RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
     _dataFile = dataFile;
     _hold = false;
 
+    _header.lastModifiedOffset = INVALID_OFFSET;
+    _isHeaderUpdated = true;
+
     _dataStream.open(_dataFile, fstream::out // open as write
                               | fstream::in  // and read file
                               | fstream::binary); // open as binary file
@@ -27,6 +30,10 @@ RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
                 cerr << "[Error] Register couldn't write on file.\n";
                 abort();
             }
+
+            // write default header
+            writeHeader();
+
             _dataStream.close();
         } else {
             // file isn't empty
@@ -46,7 +53,9 @@ RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
             }
 
             // test if the file was created by us
-            if(strncmp(headerMsg, Header::headerMsg, 3) != 0) {
+            if(strncmp(headerMsg, Header::headerMsg, 3) == 0) {
+                readHeader();
+            } else {
                 cerr << "[Warning] Register receive an corrupted file.\n";
             }
         }
@@ -61,12 +70,14 @@ RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
             cerr << "[Error] Register couldn't write on file.\n";
             abort();
         }
+
+        writeHeader();
     }
 
     _dataStream.close();
     _streamCounter = 0;
 
-//    _registerBuffer = new char[BUFFER_SIZE];
+    _registerBuffer = new char[BUFFER_SIZE];
     _register = new Register_t;
 
     _bufferSize = 0;
@@ -76,6 +87,44 @@ RegisterParser::~RegisterParser() {
     if(_dataStream.is_open()) {
         _dataStream.close();
     }
+
+    delete _register;
+    delete _registerBuffer;
+}
+
+void RegisterParser::writeHeader() {
+    openDataFile();
+
+    offset_t oldOffset = _dataStream.tellp();
+
+    _dataStream.seekp(3); // DAT
+    _dataStream.write((char *)&(_header.lastModifiedOffset), sizeof(_header.lastModifiedOffset));
+
+    if(!closeDataFile()) {
+        _dataStream.seekp(oldOffset);
+    }
+
+    _isHeaderUpdated = true;
+}
+
+void RegisterParser::readHeader() {
+    openDataFile();
+
+    _dataStream.seekg(3); // DAT
+    _dataStream.read((char *)&(_header.lastModifiedOffset), sizeof(_header.lastModifiedOffset));
+
+    closeDataFile();;
+
+    _isHeaderUpdated = true;
+}
+
+offset_t RegisterParser::lastModifiedOffset() {
+    return _header.lastModifiedOffset;
+}
+
+void RegisterParser::setLastModifiedOffset(offset_t offset) {
+    _header.lastModifiedOffset = offset;
+    _isHeaderUpdated = false;
 }
 
 bool RegisterParser::openDataFile() {
@@ -96,15 +145,19 @@ bool RegisterParser::openDataFile() {
     return _dataStream.is_open();
 }
 
-void RegisterParser::closeDataFile() {
+bool RegisterParser::closeDataFile() {
     if(_hold == false) {
         // close the file only if the function was the one to open it
         if(_streamCounter == 1) {
             _dataStream.close();
+
+            return true;
         }
 
         _streamCounter--;
     }
+
+    return false;
 }
 
 const char *RegisterParser::registerParser(Register_t reg) {
@@ -202,12 +255,18 @@ RegisterParser::Register_t &RegisterParser::decodeRegisterAt(offset_t offset) {
 
 offset_t RegisterParser::pushRegister(Register_t &reg) {
     offset_t offset = INVALID_OFFSET;
+    hold(true);
     if(openDataFile()) {
+        _dataStream.seekp(0, ios::end);
         offset = _dataStream.tellp();
+        setLastModifiedOffset(offset);
+        writeHeader();
+
         const char *buff = registerParser(reg);
         _dataStream.write(buff, _bufferSize);
     }
 
+    hold(false);
     closeDataFile();
 
     return offset;
@@ -235,6 +294,10 @@ RegisterParser::Register_t &RegisterParser::decodeNextRegister() {
     return registerParser(getNextRegister());
 }
 
+RegisterParser::Register_t &RegisterParser::decodeLastModifiedRegister() {
+    return decodeRegisterAt(lastModifiedOffset());
+}
+
 offset_t RegisterParser::readOffset() {
     if(_dataStream.is_open() && _dataStream.peek() != ifstream::traits_type::eof()) {
         return _dataStream.tellg();
@@ -253,5 +316,5 @@ offset_t RegisterParser::writeOffset() {
 }
 
 void RegisterParser::reset() {
-    _dataStream.seekg(3);
+    _dataStream.seekg(3 + sizeof(Header));
 }

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include "src/datahandle.hh"
 
 enum { // menu options
@@ -10,7 +11,7 @@ enum { // menu options
     EXIT         = 6
 };
 
-int main(int argc, char *argv[]) {
+int main() {
     DataHandle data("data.dat", "index.dat", "log.dat");
 
     int option = -1;
@@ -39,11 +40,23 @@ int main(int argc, char *argv[]) {
                 std::cout << "Digite a ID da musica: ";
                 std::cin >> reg.id;
 
+                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+
                 std::cout << "Digite o titulo: ";
-                std::cin >> reg.titulo;
+                std::cin.getline(reg.titulo, TITLE_LENGTH);
+
+                if(std::cin.fail()) {
+                    cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
 
                 std::cout << "Digite o genero: ";
-                std::cin >> reg.genero;
+                std::cin.getline(reg.genero, GENDER_LENGTH);
+
+                if(std::cin.fail()) {
+                    cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
 
                 data.insert(reg);
             } break;
@@ -55,8 +68,12 @@ int main(int argc, char *argv[]) {
                 data.search(id);
             } break;
             case REMOVE: {
-                std::cout << "Funcao nao implementada.\n";
+//                std::cout << "Funcao nao implementada.\n";
+                int id = -1;
+                std::cout << "Digite o ID a ser removida: ";
+                std::cin >> id;
 
+                data.remove(id);
             } break;
             case PRINT: {
                 data.printBTree();
@@ -66,6 +83,11 @@ int main(int argc, char *argv[]) {
             } break;
             default: {
                 std::cout << "Opcao invalida.\n";
+
+                if(std::cin.fail()) {
+                    cin.clear();
+                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                }
             } break;
         }
 

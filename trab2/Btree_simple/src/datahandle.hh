@@ -1,9 +1,9 @@
 #ifndef DATAHANDLE_HH
 #define DATAHANDLE_HH
 
-#include "sharedheader.h"
-#include "btree.hh"
+#include "sharedheader.hh"
 #include "registerparser.hh"
+#include "btree.hh"
 #include "loghandle.hh"
 
 class DataHandle {
@@ -17,6 +17,7 @@ public:
 
     void insert(RegisterParser::Register_t &reg);
     RegisterParser::Register_t search(int id);
+    void remove(int id);
 
     void rebuildIndexFile();
 

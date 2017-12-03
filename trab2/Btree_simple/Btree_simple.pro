@@ -13,6 +13,6 @@ HEADERS += \
     src/btree.hh \
     src/list.hh \
     src/registerparser.hh \
-    src/sharedheader.h \
     src/datahandle.hh \
-    src/loghandle.hh
+    src/loghandle.hh \
+    src/sharedheader.hh

@@ -1,12 +1,13 @@
 #ifndef REGISTERPARSER_HH
 #define REGISTERPARSER_HH
 
-#include "sharedheader.h"
+#include "sharedheader.hh"
 #include "loghandle.hh"
 
 using namespace std;
 
 class RegisterParser {
+friend class DataHandle;
 public:
     struct Register_t {
         int id;
@@ -17,9 +18,17 @@ public:
 private:
     struct Header {
         static constexpr char headerMsg[] = {'D', 'A', 'T'};
+        offset_t lastModifiedOffset;
     };
 
-    char _registerBuffer[BUFFER_SIZE];
+    Header _header;
+    bool _isHeaderUpdated;
+    void writeHeader();
+    void readHeader();
+    offset_t lastModifiedOffset();
+    void setLastModifiedOffset(offset_t offset);
+
+    char *_registerBuffer;
     Register_t *_register;
     bufferptr_t _bufferSize;
 
@@ -38,7 +47,7 @@ public:
     const char *dataPath() { return _dataFile; }
 
     bool openDataFile();
-    void closeDataFile();
+    bool closeDataFile();
     void hold(bool hold) { _hold = hold; }
 
     const char *registerParser() { return _registerBuffer; }
@@ -53,6 +62,8 @@ public:
 
     const char *getNextRegister();
     Register_t &decodeNextRegister();
+
+    Register_t &decodeLastModifiedRegister();
 
     offset_t readOffset();
     offset_t writeOffset();
