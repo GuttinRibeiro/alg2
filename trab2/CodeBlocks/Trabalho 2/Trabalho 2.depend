@@ -1,0 +1,147 @@
+# depslib dependency file v1.0
+1512329253 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/btree.cc
+	"btree.hh"
+
+1512342165 
+
+1512303597 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/btree.hh
+	"sharedheader.hh"
+	"list.hh"
+	"loghandle.hh"
+	"datahandle.hh"
+
+1512325849 e.hh"
+
+1512128237 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/sharedheader.hh
+	<iostream>
+	<fstream>
+	<string.h>
+
+1512329539 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/list.hh
+	<iostream>
+
+1512328991 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/loghandle.hh
+	<iostream>
+	<fstream>
+
+1512299369 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/datahandle.hh
+	"sharedheader.hh"
+	"registerparser.hh"
+	"btree.hh"
+	"loghandle.hh"
+
+1512332662 .hh"
+
+1512239527 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/registerparser.hh
+	"sharedheader.hh"
+	"loghandle.hh"
+
+1512322249 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/datahandle.cc
+	"datahandle.hh"
+
+1512329062 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/loghandle.cc
+	"loghandle.hh"
+
+1512240223 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/registerparser.cc
+	"registerparser.hh"
+
+1512342211 arser.hh"
+
+1512336085 source:d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\main.cc
+	<iostream>
+	<limits>
+	"src/datahandle.hh"
+
+1512336085 andle.hh"
+
+1512302969 d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\datahandle.hh
+	"sharedheader.hh"
+	"registerparser.hh"
+	"btree.hh"
+	"loghandle.hh"
+
+1512342211 d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\sharedheader.hh
+	<iostream>
+	<fstream>
+	<string.h>
+	<cstdlib>
+
+1512340977 d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\registerparser.hh
+	"sharedheader.hh"
+	"loghandle.hh"
+
+1512332591 d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\loghandle.hh
+	<iostream>
+	<fstream>
+
+1512307197 d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\btree.hh
+	"sharedheader.hh"
+	"list.hh"
+	"loghandle.hh"
+	"datahandle.hh"
+
+1512342165 d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\list.hh
+	<csignal>
+	<iostream>
+	<cstdlib>
+
+1512332853 source:d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\btree.cc
+	"btree.hh"
+
+1512325849 source:d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\datahandle.cc
+	"datahandle.hh"
+
+1512332662 source:d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\loghandle.cc
+	"loghandle.hh"
+
+1512342211 source:d:\grad\algii\alg2\trab2\codeblocks\trabalho 2\src\registerparser.cc
+	"registerparser.hh"
+
+1512332485 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/main.cc
+	<iostream>
+	<limits>
+	"src/datahandle.hh"
+
+1512299369 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/datahandle.hh
+	"sharedheader.hh"
+	"registerparser.hh"
+	"btree.hh"
+	"loghandle.hh"
+
+1512338611 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/sharedheader.hh
+	<iostream>
+	<fstream>
+	<string.h>
+	<cstdlib>
+
+1512337377 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/registerparser.hh
+	"sharedheader.hh"
+	"loghandle.hh"
+
+1512383077 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/loghandle.hh
+	<iostream>
+	<fstream>
+
+1512303597 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/btree.hh
+	"sharedheader.hh"
+	"list.hh"
+	"loghandle.hh"
+	"datahandle.hh"
+
+1512338565 /home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/list.hh
+	<csignal>
+	<iostream>
+	<cstdlib>
+
+1512383233 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/btree.cc
+	"btree.hh"
+
+1512383287 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/datahandle.cc
+	"datahandle.hh"
+
+1512383104 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/loghandle.cc
+	"loghandle.hh"
+
+1512338611 source:/home/suzukawa/Files/Grad/AlgII/alg2/trab2/CodeBlocks/Trabalho 2/src/registerparser.cc
+	"registerparser.hh"
+
