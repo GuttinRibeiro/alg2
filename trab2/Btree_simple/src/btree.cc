@@ -89,10 +89,13 @@ BTree::~BTree() {
         _indexStream.close();
     }
 
+    _history.deleteAll();
+    _updateNodes.deleteAll();
+
     // delete buffers
-    delete _keyBuffer;
+    delete[] _keyBuffer;
     delete _key;
-    delete _nodeBuffer;
+    delete[] _nodeBuffer;
     delete _node;
 }
 

@@ -4,6 +4,7 @@ constexpr char RegisterParser::Header::headerMsg[];
 
 RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
     _log = log;
+    _streamCounter = 0;
 
     _dataFile = dataFile;
     _hold = false;
@@ -28,7 +29,7 @@ RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
             // test if we can write on the file
             if(!(_dataStream.write(Header::headerMsg, 3) )) {
                 cerr << "[Error] Register couldn't write on file.\n";
-                std::abort();
+                abort();
             }
 
             // write default header
@@ -75,7 +76,6 @@ RegisterParser::RegisterParser(const char *dataFile, LogHandle *log) {
     }
 
     _dataStream.close();
-    _streamCounter = 0;
 
     _registerBuffer = new char[BUFFER_SIZE];
     _register = new Register_t;
@@ -89,7 +89,7 @@ RegisterParser::~RegisterParser() {
     }
 
     delete _register;
-    delete _registerBuffer;
+    delete[] _registerBuffer;
 }
 
 void RegisterParser::writeHeader() {

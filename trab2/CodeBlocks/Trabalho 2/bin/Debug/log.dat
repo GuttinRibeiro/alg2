@@ -1,0 +1,54 @@
+Execucao de operacao de INSERCAO de 1, 1, 1.
+Execucao de operacao de INSERCAO de 2, 2, 2.
+Execucao de operacao de INSERCAO de 3, 3, 3.
+Execucao de operacao de INSERCAO de 6, 6, 6.
+Execucao de operacao de INSERCAO de 5, 5, 5.
+Divisao de no - pagina 0
+Chave 3 promovida
+Execucao de operacao de INSERCAO de 4, 4, 4.
+Execucao de operacao de REMOCAO de 5.
+Chave 5 removida com sucesso.
+Execucao de operacao de REMOCAO de 2.
+Concatenacao de chaves - entre as paginas irmas 0 e 1.
+Chave 2 removida com sucesso.
+Execucao de operacao de REMOCAO de 1.
+Chave 1 removida com sucesso.
+Execucao de operacao de REMOCAO de 3.
+Chave 3 removida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 2 <4/111> <6/71> 
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 6 duplicada.
+Chave 4 duplicada.
+Execucao de operacao de REMOCAO de 4.
+Chave 4 removida com sucesso.
+Execucao de operacao de INSERCAO de 6, 6, 6.
+Chave 6 duplicada.
+Execucao de operacao de INSERCAO de 56, 56, 65.
+Execucao de operacao de INSERCAO de 2, 2, 2.
+Execucao de operacao de INSERCAO de 3, 3, 3.
+Execucao de operacao de INSERCAO de 4, 4, 4.
+Divisao de no - pagina 0
+Chave 4 promovida
+Execucao de operacao de REMOCAO de 1.
+Chave 1 nao cadastrada.
+Execucao de operacao de REMOCAO de 5.
+Chave 5 nao cadastrada.
+Execucao de operacao de INSERCAO de 3, 3, 3.
+Chave 3 duplicada.
+Execucao de operacao de REMOCAO de 3.
+Concatenacao de chaves - entre as paginas irmas 0 e 3.
+Chave 3 removida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 4 <2/153> <4/193> <6/71> <56/131> 
+Execucao de operacao de REMOCAO de 2.
+Chave 2 removida com sucesso.
+Execucao de operacao de REMOCAO de 5.
+Chave 5 nao cadastrada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 3 <4/193> <6/71> <56/131> 
+Execucao de operacao de REMOCAO de 4.
+Chave 4 removida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 2 <6/71> <56/131> 
+Execucao de operacao de INSERCAO de 8, 8, 8.

@@ -66,3 +66,123 @@ Execucao de operacao para mostrar a arvore-B gerada:
 0 1 <19/373> 
 Execucao de operacao para mostrar a arvore-B gerada:
 0 1 <81/595> 
+Execucao de operacao de INSERCAO de 1, 1, 1.
+Chave 1 duplicada.
+Execucao de operacao de INSERCAO de 2, 2, 2.
+Chave 2 duplicada.
+Execucao de operacao de INSERCAO de 3, 3, 3.
+Chave 3 duplicada.
+Execucao de operacao de INSERCAO de 5, 5, 5.
+Chave 5 duplicada.
+Execucao de operacao de INSERCAO de 4, 4, 4.
+Divisao de no - pagina 3
+Chave 7 promovida
+Divisao de no - pagina 2
+Chave 17 promovida
+Execucao de operacao de INSERCAO de 6, 6, .
+Execucao de operacao de REMOCAO de 1.
+Redistribuicao de chaves - entre as paginas irmas 0 e 3.
+Chave 1 removida com sucesso.
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 7 duplicada.
+Chave 22 duplicada.
+Chave 2 duplicada.
+Chave 3 duplicada.
+Chave 5 duplicada.
+Chave 8 duplicada.
+Chave 32 duplicada.
+Chave 44 duplicada.
+Chave 56 duplicada.
+Chave 57 duplicada.
+Chave 17 duplicada.
+Chave 25 duplicada.
+Chave 43 duplicada.
+Chave 10 duplicada.
+Chave 52 duplicada.
+Chave 4 duplicada.
+Chave 6 duplicada.
+Execucao de operacao de REMOCAO de 3.
+Concatenacao de chaves - entre as paginas irmas 0 e 3.
+Concatenacao de chaves - entre as paginas irmas 2 e 15.
+Chave 3 removida com sucesso.
+Execucao de operacao de PESQUISA de 3
+Chave 3 nao encontrada.
+Execucao de operacao de INSERCAO de 8, 8, 8.
+Chave 8 duplicada.
+Execucao de operacao de INSERCAO de 9, 9, 9.
+Execucao de operacao de INSERCAO de 10, 10, 10.
+Chave 10 duplicada.
+Execucao de operacao de INSERCAO de 11, 11, 11.
+Execucao de operacao de INSERCAO de 121, 121, 121.
+Divisao de no - pagina 2
+Chave 43 promovida
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <43/417> 
+1 2 <7/99> <17/351> 
+1 2 <57/329> <121/735> 
+2 4 <2/183> <4/654> <5/223> <6/674> 
+2 4 <8/243> <9/693> <10/459> <11/713> 
+2 3 <22/139> <25/395> <32/263> 
+2 3 <44/285> <52/503> <56/307> 
+Execucao de operacao de REMOCAO de 43.
+Chave 32 promovida.
+Chave 43 rebaixada.
+Chave 43 removida com sucesso.
+Execucao de operacao de REMOCAO de 32.
+Chave 25 promovida.
+Chave 32 rebaixada.
+Redistribuicao de chaves - entre as paginas irmas 14 e 4.
+Chave 32 removida com sucesso.
+Execucao de operacao de REMOCAO de 25.
+Chave 22 promovida.
+Chave 25 rebaixada.
+Redistribuicao de chaves - entre as paginas irmas 14 e 4.
+Chave 25 removida com sucesso.
+Execucao de operacao de REMOCAO de 52.
+Chave 52 removida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <22/139> 
+1 2 <7/99> <10/459> 
+1 2 <57/329> <121/735> 
+2 4 <2/183> <4/654> <5/223> <6/674> 
+2 2 <8/243> <9/693> 
+2 2 <11/713> <17/351> 
+2 2 <44/285> <56/307> 
+Execucao de operacao de INSERCAO de 52, 52, 52.
+Execucao de operacao de INSERCAO de 53, 53, 53.
+Execucao de operacao de INSERCAO de 54, 54, 54.
+Divisao de no - pagina 9
+Chave 53 promovida
+Execucao de operacao de INSERCAO de 56, 58, 58.
+Chave 56 duplicada.
+Execucao de operacao de REMOCAO de 51.
+Chave 51 nao cadastrada.
+Execucao de operacao de REMOCAO de 52.
+Concatenacao de chaves - entre as paginas irmas 9 e 19.
+Chave 52 removida com sucesso.
+Execucao de operacao de REMOCAO de 86.
+Chave 86 nao cadastrada.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <22/139> 
+1 2 <7/99> <10/459> 
+1 2 <57/329> <121/735> 
+2 4 <2/183> <4/654> <5/223> <6/674> 
+2 2 <8/243> <9/693> 
+2 2 <11/713> <17/351> 
+2 4 <44/285> <53/781> <54/803> <56/307> 
+Execucao de operacao de REMOCAO de 54.
+Chave 54 removida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 1 <22/139> 
+1 2 <7/99> <10/459> 
+1 2 <57/329> <121/735> 
+2 4 <2/183> <4/654> <5/223> <6/674> 
+2 2 <8/243> <9/693> 
+2 2 <11/713> <17/351> 
+2 3 <44/285> <53/781> <56/307> 
+Execucao de operacao de REMOCAO de 22.
+Chave 17 promovida.
+Chave 22 rebaixada.
+Concatenacao de chaves - entre as paginas irmas 14 e 4.
+Concatenacao de chaves - entre as paginas irmas 2 e 17.
+Chave 22 removida com sucesso.

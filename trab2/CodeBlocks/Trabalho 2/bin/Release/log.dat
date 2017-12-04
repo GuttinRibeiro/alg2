@@ -1,0 +1,28 @@
+Execucao de operacao de INSERCAO de 1, 1, 1.
+Execucao de operacao de INSERCAO de 5, 5, 5.
+Execucao de operacao de INSERCAO de 4, 4, 4.
+Execucao de operacao de INSERCAO de 6, 6, 6.
+Execucao de operacao de INSERCAO de 8, 8, 8.
+Divisao de no - pagina 0
+Chave 5 promovida
+Execucao de operacao de REMOCAO de 5.
+Chave 4 promovida.
+Chave 5 rebaixada.
+Concatenacao de chaves - entre as paginas irmas 0 e 1.
+Chave 5 removida com sucesso.
+Execucao de operacao para mostrar a arvore-B gerada:
+0 4 <1/11> <4/51> <6/71> <8/91> 
+Execucao de operacao de INSERCAO de 8, 8, 8.
+Chave 8 duplicada.
+Execucao da criacao do arquivo de indice index.dat com base no arquivo de dados data.dat.
+Chave 1 duplicada.
+Chave 4 duplicada.
+Chave 6 duplicada.
+Chave 8 duplicada.
+Execucao de operacao de INSERCAO de 50, 2, 55.
+Divisao de no - pagina 0
+Chave 6 promovida
+Execucao de operacao de INSERCAO de 54, 2, 59.
+Execucao de operacao de INSERCAO de 53, 2, 61.
+Execucao de operacao de INSERCAO de 53, 6, 2.
+Chave 53 duplicada.
